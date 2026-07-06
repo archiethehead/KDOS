@@ -18,7 +18,7 @@ boot:
 
 kernel_offset equ 0x1000
 
-%include "disk.asm"
+%include "utils/disk.asm"
 
 times 510 - ($-$$) db 0
 dw  0xaa55
