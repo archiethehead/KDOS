@@ -3,22 +3,33 @@ BITS 16
 %DEFINE CR 0x0d
 %DEFINE LF 0x0a
 
-char_out:
-	mov ah, 0x0e
+clrscr:
+	mov ah, 0x00
+	mov al, 0x03
 	int 0x10
-	ret	
 
-str_out:
+cout:
+
+	cmp al, CR
+	jne out
+	mov al, LF
+	call cout
+	mov al, CR
+
+	out:
+		mov ah, 0x0e
+		int 0x10
+		ret	
+
+sout:
 	lodsb
 	cmp al, 0
 	je done
-	call char_out
-	jmp str_out
+	call cout
+	jmp sout
 
 	done:
 		mov al, CR
-		call char_out
-		mov al, LF
-		call char_out
+		call cout
 		ret
 
