@@ -1,7 +1,9 @@
 BITS 16
 
 strcmp:
-
+	
+	xor ax, ax
+	
 	.loop:		
 	
 		mov al, [si]
