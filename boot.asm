@@ -1,6 +1,7 @@
 [org 0x7c00]
 
 boot:
+
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
@@ -13,11 +14,14 @@ boot:
 	mov ch, 0x00
 	mov cl, 0x02
 	mov dh, 0x00
+	
 	call read_sector
 	jmp kernel_offset
-
+	
+exit db "Shutdown finished. You may now turn off your PC.",0
 kernel_offset equ 0x1000
 
+%include "utils/out.asm"
 %include "utils/disk.asm"
 
 times 510 - ($-$$) db 0
