@@ -8,6 +8,7 @@ kernel_entry:
 	cli
 
     mov ax, 0
+	mov bx, ax
     mov ss, ax          
     mov sp, 0xffff
 
@@ -21,6 +22,7 @@ kernel_entry:
 	mov si, input_buffer
 
 	.shell_loop:
+
 		call binput
 		
 		cmp al, 0x0d
@@ -29,18 +31,21 @@ kernel_entry:
 		call chout
 		mov [si], al
 		inc si
-		inc ax
+		inc bx
 
 		jmp .shell_loop
 
 		.enter_command:
+
+			mov byte [si], 0
+			call newline
+			
 			mov si, input_buffer
 			call strout
-			call newline
+	
 			call is_command
-			mov si, input_buffer 
-			call clear_array
 			mov si, input_buffer
+			mov byte [si], 0
 			jmp .shell_loop
 
 is_command:

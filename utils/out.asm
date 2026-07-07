@@ -31,3 +31,5 @@ strout:
 	done:
 		call newline
 		ret
+
+numerical_buffer times 50 db 0
