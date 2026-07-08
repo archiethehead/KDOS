@@ -36,26 +36,93 @@ boot:
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
-
+	mov ss, ax
+    mov sp, 0x7c00
 	mov ax, 0x0000
 	mov es, ax
-	mov bx, kernel_offset
+	mov bx, sector_offset
 	
-	mov si, mbr ; <-- Just to tell us the MBR is being ran at all. 
+	mov si, mbr  ; <-- Just to tell us the MBR is being ran at all. 
 	call strout	 ;     Death to writing files into floppy mounts.
 
-	mov dl, 0x00 ;drivenum
-	mov ch, 0x00 ;cylinder
-	mov cl, 0x02 ;sector
-	mov dh, 0x01 ;head
-	call read_sector
-	jmp kernel_offset
+	call find_kernel
+	jmp $
+
+find_kernel:
+
+	mov cl, 0x02	
+	.loop:
+
+		push cx
+
+		call read_sector
+		call cycle_sector
+
+		pop cx
+		
+		cmp al, 1
+		je .done
+
+		inc cl
+		cmp cl, 16
+		jne .loop
+
+	.done:
+		ret	
 	
+read_sector:	
+	
+	mov ax, 0x0000
+	mov es, ax
+	mov dl, 0x00 ; drive number
+	mov ch, 0x00 ; cylinder
+	mov dh, 0x01 ; head
+    mov ah, 0x02
+    mov al, 0x01 ; number of sectors to be read
+	mov bx, sector_offset
+    int 0x13
+ 	ret
+
+cycle_sector:
+	
+	mov bx, sector_offset
+	xor dx, dx
+	
+	.loop:
+
+		mov cx, 11
+		mov si, kern_name
+		mov di, bx
+		repe cmpsb	
+		je .found
+	
+	.next_file:
+
+		inc dx
+		cmp dx, 16
+		je .not_found
+		add bx, 32
+		jmp .loop
+	
+	.found:
+		mov si, kern_name
+		call strout
+		mov al, 1
+		ret
+	
+	.not_found:
+		mov ax, 0
+		ret
+			
+
+
 mbr db "You are in the MBR!",0
+kern_name db "KERNEL  BIN",0
+
+sector_offset equ 0x7e00
 kernel_offset equ 0x1000
 
 %include "utils/out.asm"
-%include "utils/disk.asm"
 
 times 510 - ($-$$) db 0
 dw  0xaa55
