@@ -9,12 +9,15 @@ boot:
 	mov ax, 0x0000
 	mov es, ax
 	mov bx, kernel_offset
+	
+	mov si, exit
+	call strout	
 
-	mov dl, 0x80
+	mov dl, 0x00
 	mov ch, 0x00
 	mov cl, 0x02
 	mov dh, 0x00
-	mov al, 0x0a
+	mov al, 0x03
 	call read_sector
 	jmp kernel_offset
 	

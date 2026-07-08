@@ -10,7 +10,9 @@ strcmp:
 		cmp al, [di]
 		jne .ne
 	
-		cmp al, 0x00
+		cmp al, 0
+		je .e
+		cmp al, 32
 		je .e
 	
 		inc si
