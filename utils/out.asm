@@ -24,12 +24,16 @@ chout:
 strout:
 	lodsb
 	cmp al, 0
-	je done
+	je .done
 	call chout
 	jmp strout
 
-	done:
+	.done:
+		cmp dx, 1
+		je .return
 		call newline
+	
+	.return:
 		ret
 
 numerical_buffer times 50 db 0
