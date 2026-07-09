@@ -105,19 +105,18 @@ cycle_sector:
 		jmp .loop
 	
 	.found:
-		mov si, kern_name
+		mov si, loading
 		call strout
 		mov al, 1
 		ret
 	
 	.not_found:
 		mov ax, 0
-		ret
-			
-
+		ret			
 
 mbr db "You are in the MBR!",0
 kern_name db "KERNEL  BIN",0
+loading db "Loading kernel.bin . . .",0
 
 sector_offset equ 0x7e00
 kernel_offset equ 0x1000
