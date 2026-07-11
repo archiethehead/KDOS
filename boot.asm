@@ -41,12 +41,13 @@ boot:
 	mov ax, 0x0000
 	mov es, ax
 	mov bx, sector_offset
-	
-	mov si, mbr  ; <-- Just to tell us the MBR is being ran at all. 
-	call strout	 ;     Death to writing files into floppy mounts.
-
 	call find_kernel
-	jmp $
+	
+	cmp al, 1
+ 
+
+	.kernel_not_found:
+		jmp $
 
 find_kernel:
 
@@ -64,6 +65,7 @@ find_kernel:
 		je .done
 
 		inc cl
+		mov [sector], cl
 		cmp cl, 16
 		jne .loop
 
@@ -72,16 +74,48 @@ find_kernel:
 	
 read_sector:	
 	
-	mov ax, 0x0000
-	mov es, ax
-	mov dl, 0x00 ; drive number
-	mov ch, 0x00 ; cylinder
-	mov dh, 0x01 ; head
-    mov ah, 0x02
-    mov al, 0x01 ; number of sectors to be read
-	mov bx, sector_offset
-    int 0x13
- 	ret
+    .read_loop:
+        mov ax, 0x0000
+        mov es, ax
+        mov dl, 0x00 ; drive number
+        mov ch, 0x00 ; Track
+		mov [track], ch
+        mov dh, 0x01 ; head
+		mov [head], dh
+        mov ah, 0x02
+        mov al, 0x01 ; number of sectors to be read
+        mov bx, sector_offset
+        int 0x13
+        jc .floppy_timeout
+		push si
+       	mov si, disk_timeout
+		mov [si], 0
+		pop si
+		ret
+
+	; Standard floppy's can submit a read fail due to
+	; needing to speed up first, and failing to do so
+	; quick enough. For this, we give the floppy three
+	; chances if it returns a read fail, and assume it's
+	; a genuine error if it still fails.
+	;
+	; |
+	; |
+	; V
+
+    .floppy_timeout:
+       	push si
+		mov si, disk_timeout
+		add [si], 1
+		cmp [si], 3
+		pop si
+        je .read_fail
+        jmp .read_loop
+    
+    .read_fail:
+	    mov si, disk_error
+	    call strout
+	    jmp $
 
 cycle_sector:
 	
@@ -114,14 +148,37 @@ cycle_sector:
 		mov ax, 0
 		ret			
 
+; Linear Byte Address --> Cylinder-Head Sector
+;
+; |
+; |
+; V
+
+lba2chs:
+	xor dx, dx
+	div word [BPB_SecPerTrk]
+	inc dl
+	mov byte [sector], dl
+	xor dx, dx
+	div word [BPB_NumHeads]
+	mov byte [head], dl
+	mov byte [track], al
+
 mbr db "You are in the MBR!",0
 kern_name db "KERNEL  BIN",0
 loading db "Loading kernel.bin . . .",0
+disk_error db "ERROR --> Could not read disk :(",0
+
+sector db 0x00
+head db 0x00
+track db 0x00
 
 sector_offset equ 0x7e00
 kernel_offset equ 0x1000
 
+disk_timeout db 0
+
 %include "utils/out.asm"
 
 times 510 - ($-$$) db 0
-dw  0xaa55
+dw 0xaa55
