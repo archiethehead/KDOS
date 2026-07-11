@@ -15,14 +15,17 @@ shell_commands:
 	dw help_str
 	dw sysinfo_str
 	dw echo_str
+	dw clrscr_str
 
 exit_str db "exit",0
 help_str db "help",0
 sysinfo_str db "sysinfo",0
 echo_str db "echo",0
+clrscr_str db "clrscr",0
 
 shell_command_function_pointers:
 	dw shutdown
 	dw help
 	dw sysinfo
 	dw echo
+	dw clrscr

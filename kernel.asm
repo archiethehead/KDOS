@@ -2,7 +2,7 @@
 BITS 16
  
 %define VERSION "0.0"
-%define COMMAND_COUNT 4
+%define COMMAND_COUNT 5
 %DEFINE CR 0x0d
 %DEFINE LF 0x0a
 
@@ -99,11 +99,17 @@ shutdown:
 	int 0x15
 
 help:
-	push si
-	mov si, help_message
-	xor dx, dx
-	call strout		
-	pop si	
+	xor cx, cx
+	mov dx, 0
+	call newline
+	mov si, shell_commands 
+	.loop:
+		call strout
+		inc cx
+		cmp cx, COMMAND_COUNT
+		jne .loop
+	
+	call newline
 	ret
 
 echo:
