@@ -1,45 +1,95 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
-FILE* Fileptr_s;
-const char* SMBRName = "build/boot.bin";
-const char* SKernName = "build/kernel.bin";
+FILE* Fileptr;
+const size_t MBRSize = 512;
+const char* MBRName = "build/boot.bin";
+const char* KernName = "build/kernel.bin";
+
+#pragma pack(push, 1)
+
+typedef struct {
+
+	char Name[8];
+	uint32_t DiskSector;
+	uint32_t FileSize;
+
+} DirectoryEntry;
+
+typedef struct {
+
+	uint32_t Size;
+
+} FileTag;
+
+typedef struct {
+
+	uint16_t FileCount;
+	uint32_t CurrentDir;
+	uint32_t ParentDir;
+	uint32_t NextDir;
+	char padding[2];
+
+} DirectoryMetada;
+
+#pragma pack(pop)
 
 int main() {
 
-	size_t STBytesRead;
+	// Read MBR
 
-	fopen_s(&Fileptr_s, SMBRName, "r");
-	uint8_t* UBMBRBuffer = (uint8_t*)malloc(512);
+	size_t BytesRead;
 
-	if (!UBMBRBuffer || !Fileptr_s)
+	fopen_s(&Fileptr, MBRName, "r");
+	uint8_t* MBRBuffer = (uint8_t*)malloc(512);
+
+	if (!MBRBuffer || !Fileptr)
 		return EXIT_FAILURE;
 
-	STBytesRead = fread_s(UBMBRBuffer, 512, 1, 512, Fileptr_s);
+	BytesRead = fread_s(MBRBuffer, 512, 1, 512, Fileptr);
 
-	fopen_s(&Fileptr_s, SKernName, "r");
-
-	if (!Fileptr_s)
+	if (BytesRead < MBRSize)
 		return EXIT_FAILURE;
 
-	fseek(Fileptr_s, 0, SEEK_END);
-	size_t Size = ftell(Fileptr_s);
-	fseek(Fileptr_s, 0, SEEK_SET);
 
-	uint8_t* UBKernBuffer = (uint8_t*)malloc(Size);
 
-	if (!UBKernBuffer)
+	// Read Kernel
+
+	fopen_s(&Fileptr, KernName, "r");
+
+	if (!Fileptr)
 		return EXIT_FAILURE;
 
-	STBytesRead = fread_s(UBKernBuffer, Size, 1, Size, Fileptr_s);
+	fseek(Fileptr, 0, SEEK_END);
+	size_t KernelSize = ftell(Fileptr);
+	fseek(Fileptr, 0, SEEK_SET);
 
-	fopen_s(&Fileptr_s, "build/KDOS.img", "w");
+	uint8_t* KernelBuffer = (uint8_t*)malloc(KernelSize);
 
-	if (!Fileptr_s)
+	if (!KernelBuffer)
 		return EXIT_FAILURE;
 
-	fwrite(UBMBRBuffer, 512, 1, Fileptr_s);
-	fwrite(UBKernBuffer, Size, 1, Fileptr_s);
+	BytesRead = fread_s(KernelBuffer, KernelSize, 1, KernelSize, Fileptr);
+
+	if (BytesRead < KernelSize)
+		return EXIT_FAILURE;
+
+
+
+	// Write Bootable disk
+
+	fopen_s(&Fileptr, "build/KDOS.img", "w");
+
+	if (!Fileptr)
+		return EXIT_FAILURE;
+
+	fwrite(MBRBuffer, 512, 1, Fileptr);
+	fwrite(KernelBuffer, KernelSize, 1, Fileptr);
+
+
+
+	return EXIT_SUCCESS;	
 
 }
