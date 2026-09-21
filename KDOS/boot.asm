@@ -1,4 +1,4 @@
-[org 0x7c00]
+[org 0x7C00]
 BITS 16
 
 cli
@@ -10,11 +10,7 @@ mov bp, sp
 
 sti
 
-mov ah, 0x0E
-mov al, 'a'
-int 0x10
-
 jmp $
 
 times 510 - ($-$$) db 0
-dw 0xaa55
+dw 0xAA55
