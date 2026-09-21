@@ -52,8 +52,6 @@ char blockingInput() {
 
 void printString(char* string) {
 
-    register unsigned short incrementCount = 0;
-
     while (*string != '\0') {
 
         if (*string == '\n')
@@ -61,10 +59,7 @@ void printString(char* string) {
 
         printChar(*string);
         string++;
-        incrementCount++;
 
     }
-
-    string -= incrementCount;
 
 }
