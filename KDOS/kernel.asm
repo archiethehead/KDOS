@@ -1,3 +1,6 @@
+[org 0x0000]
+bits 16
+
 mov ah, 0x0E
 mov al, 'a'
 int 0x10
