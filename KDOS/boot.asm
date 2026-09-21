@@ -10,6 +10,10 @@ mov bp, sp
 
 sti
 
+mov ah, 0x0E
+mov al, 'a'
+int 0x10
+
 jmp $
 
 times 510 - ($-$$) db 0

@@ -8,13 +8,14 @@ const size_t MBRSize = 512;
 const char* MBRName = "build/boot.bin";
 const char* KernName = "build/kernel.bin";
 
+
 #pragma pack(push, 1)
 
 typedef struct {
 
-	char Name[8];
+	char FileName[8];
 	uint32_t DiskSector;
-	uint32_t FileSize;
+	uint32_t FileSizeAndFlags;
 
 } DirectoryEntry;
 
@@ -25,14 +26,24 @@ typedef struct {
 } FileTag;
 
 typedef struct {
-
+	
+	char DirectoryName[8];
 	uint16_t FileCount;
 	uint32_t CurrentDir;
 	uint32_t ParentDir;
 	uint32_t NextDir;
-	char padding[2];
 
 } DirectoryMetada;
+
+typedef struct {
+
+	FileTag Header;
+	DirectoryMetada Metadata;
+	DirectoryEntry Entries[30];
+	char padding[2];
+	FileTag Footer;
+
+} Directory;
 
 #pragma pack(pop)
 
@@ -88,7 +99,16 @@ int main() {
 	fwrite(MBRBuffer, 512, 1, Fileptr);
 	fwrite(KernelBuffer, KernelSize, 1, Fileptr);
 
+	Directory RootDirectory;
+	RootDirectory.Header.Size = 3 << 30;
+	RootDirectory.Header.Size |= 1;
+	RootDirectory.Footer = RootDirectory.Header;
+	memcpy_s(RootDirectory.Metadata.DirectoryName, sizeof(RootDirectory.Metadata.DirectoryName), "Root", sizeof("Root"));
+	RootDirectory.Metadata.FileCount = 0;
+	RootDirectory.padding[0] = 'a';
+	RootDirectory.padding[1] = 'b';
 
+	fwrite(&RootDirectory, sizeof(RootDirectory), 1, Fileptr);
 
 	return EXIT_SUCCESS;	
 
