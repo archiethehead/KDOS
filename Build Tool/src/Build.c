@@ -5,6 +5,7 @@
 
 FILE* Fileptr;
 const size_t MBRSize = 512;
+const size_t KernelTargetSize = 16384;
 const char* MBRName = "build/boot.bin";
 const char* KernName = "build/kernel.bin";
 
@@ -47,13 +48,23 @@ typedef struct {
 
 #pragma pack(pop)
 
+inline size_t GetFileSize(FILE* Fileptr) {
+
+	fseek(Fileptr, 0, SEEK_END);
+	size_t FileSize = ftell(Fileptr);
+	fseek(Fileptr, 0, SEEK_SET);
+
+	return FileSize;
+
+}
+
 int main() {
 
 	// Read MBR
 
 	size_t BytesRead;
 
-	fopen_s(&Fileptr, MBRName, "r");
+	fopen_s(&Fileptr, MBRName, "rb");
 	uint8_t* MBRBuffer = (uint8_t*)malloc(512);
 
 	if (!MBRBuffer || !Fileptr)
@@ -68,14 +79,25 @@ int main() {
 
 	// Read Kernel
 
-	fopen_s(&Fileptr, KernName, "r");
+	fopen_s(&Fileptr, KernName, "rb");
 
 	if (!Fileptr)
 		return EXIT_FAILURE;
 
-	fseek(Fileptr, 0, SEEK_END);
-	size_t KernelSize = ftell(Fileptr);
-	fseek(Fileptr, 0, SEEK_SET);
+	size_t KernelSize = GetFileSize(Fileptr);
+	size_t* KernelLeftoverSpace = NULL;
+
+	if (KernelSize < KernelTargetSize) {
+
+		KernelLeftoverSpace = (size_t*)malloc(KernelTargetSize - KernelSize);
+		if (KernelLeftoverSpace == NULL)
+			return EXIT_FAILURE;
+		memset(KernelLeftoverSpace, 0, KernelTargetSize - KernelSize);
+
+	}
+
+	else if (KernelSize > KernelTargetSize)
+		return EXIT_FAILURE;
 
 	uint8_t* KernelBuffer = (uint8_t*)malloc(KernelSize);
 
@@ -87,17 +109,18 @@ int main() {
 	if (BytesRead < KernelSize)
 		return EXIT_FAILURE;
 
-
-
 	// Write Bootable disk
 
-	fopen_s(&Fileptr, "build/KDOS.img", "w");
+	fopen_s(&Fileptr, "build/KDOS.img", "wb");
 
 	if (!Fileptr)
 		return EXIT_FAILURE;
 
 	fwrite(MBRBuffer, 512, 1, Fileptr);
 	fwrite(KernelBuffer, KernelSize, 1, Fileptr);
+
+	if (KernelLeftoverSpace != NULL)
+		fwrite(KernelLeftoverSpace, KernelTargetSize - KernelSize, 1,Fileptr);
 
 	Directory RootDirectory;
 	RootDirectory.Header.Size = 3 << 30;
