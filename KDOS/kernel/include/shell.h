@@ -6,6 +6,7 @@
 void executeCommand(const char* userInput);
 
 void exit();
+void sysinfo();
 
 typedef struct {
 

@@ -4,7 +4,8 @@
 
 const command shellCommands[] = {
 
-    {"exit", &exit}
+    {"exit", &exit},
+    {"sysinfo", &sysinfo}
 
 };
 
@@ -21,9 +22,71 @@ void exit() {
 
 }
 
+void sysinfo() {
+
+    unsigned long memory = 1048576L; //1 MiB
+    unsigned short oneKibBetween1and16Meg = 0;
+    unsigned short sixtyFourKibBeyond16Meg = 0;
+
+    __asm {
+
+        mov ax, 0xE801
+        int 0x15
+        mov oneKibBetween1and16Meg, ax
+        mov sixtyFourKibBeyond16Meg, bx
+
+    }
+
+    unsigned long ULoneKibBetween1and16Meg = (unsigned long)oneKibBetween1and16Meg * 1024UL;    // to bytes
+    unsigned long ULsixtyFourKibBeyond16Meg = (unsigned long)sixtyFourKibBeyond16Meg * 65536UL; // to bytes
+
+    memory += ULoneKibBetween1and16Meg;
+    memory += ULsixtyFourKibBeyond16Meg;
+    memory = memory >> 20; // x >> 20 == x / 1048576L
+
+    char numberBuffer[16];
+    ulongToStr(memory, numberBuffer);
+    printString(numberBuffer);
+    printString(" MiB of extended-memory\n");
+
+     
+    int conventionalMemory = 0;
+    __asm {
+
+        int 0x12
+        mov conventionalMemory, ax
+    
+    }
+    
+    intToStr(conventionalMemory, numberBuffer);
+    printString(numberBuffer);
+    printString(" KiB of usable memory\n");
+
+    char numberOfConnectedDrives = 0;
+
+    __asm {
+
+        xor ax, ax
+        mov es, ax
+        mov di, ax
+
+        mov ah, 0x08
+        mov dl, 0x80
+        int 0x13
+
+        mov numberOfConnectedDrives, dl
+
+    }
+
+    intToStr(numberOfConnectedDrives, numberBuffer);
+    printString(numberBuffer);
+    printString(" drive(s) connected\n");
+
+}
+
 void executeCommand(const char* userInput) {
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < COMMAND_COUNT; i++) {
 
         if (strequal(userInput, shellCommands[i].name)) {
          

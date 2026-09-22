@@ -15,6 +15,13 @@ inline void printChar(char c) {
 
 }
 
+inline void newline() {
+
+    printChar('\n');
+    printChar('\r');
+
+}
+
 void printString(char* string);
 char blockingInput();
 

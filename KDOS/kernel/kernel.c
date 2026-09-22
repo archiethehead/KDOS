@@ -27,9 +27,7 @@ void kernelMain(void) {
             }
 
             userInputBufferIndex = 0;
-            printChar('\n');
-            printChar('\r');
-
+            newline();
             executeCommand(userInputBuffer);
 
             break;
@@ -49,11 +47,6 @@ void kernelMain(void) {
 
     }
 
-    __asm {
-
-        halt:
-        jmp halt;
-
-    }
+    return;
 
 }
