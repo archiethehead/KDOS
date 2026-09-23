@@ -38,6 +38,15 @@ char strequal(const char* stringOne, const char* stringTwo) {
 
 void intToStr(int N, char *str) {
     
+    // base case
+    if (N == 0) {
+
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+
+    }
+
     int i = 0;
     int sign = N;
     if (N < 0)
@@ -68,6 +77,15 @@ void intToStr(int N, char *str) {
 
 void ulongToStr(unsigned long N, char *str) {
     
+    // base case
+    if (N == 0) {
+
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+
+    }
+
     int i = 0;
     while (N > 0) {
       
