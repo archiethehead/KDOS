@@ -1,8 +1,10 @@
 #include "console-io.h"
 #include "shell.h"
+#include "disk.h"
 
-#define USER_INPUT_BUFFER_SIZE 1024
+#define USER_INPUT_BUFFER_SIZE 64
 
+extern int KERNEL_ADDRESS;
 int userInputBufferIndex = 0;
 char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 
@@ -11,6 +13,8 @@ void kernelMain(void) {
 
     clrscr();
     printString("Welcome to KDOS !\n");
+
+    readFolder(33);
 
     while (1) {
 
@@ -38,10 +42,9 @@ void kernelMain(void) {
 
                 userInputBuffer[userInputBufferIndex] = userInput;
                 userInputBufferIndex++;
+                printChar(userInput);
 
             }
-
-            printChar(userInput);
 
         }
 

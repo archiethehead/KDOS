@@ -20,7 +20,7 @@ mov dl, 0x80
 mov si, disk_address_packet
 int 0x13
 
-mov al, 'e'
+mov ax, KERNEL_ADDRESS
 
 jmp KERNEL_ADDRESS:0x0000
 
