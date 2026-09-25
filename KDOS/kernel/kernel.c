@@ -12,9 +12,11 @@ char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 void kernelMain(void) {
 
     clrscr();
-    printString("Welcome to KDOS !\n");
-
+    printString("Welcome to KDOS !\n\n"); 
     initRoot();
+
+    printString(filePathBuffer);
+    printChar(' ');
 
     while (1) {
 
@@ -33,6 +35,9 @@ void kernelMain(void) {
             userInputBufferIndex = 0;
             newline();
             executeCommand(userInputBuffer);
+            newline();
+            printString(filePathBuffer);
+            printChar(' ');
 
             break;
 

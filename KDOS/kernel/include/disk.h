@@ -3,6 +3,14 @@
 
 #define SECTOR_BUFFER_SIZE 0x0001
 
+typedef enum {	
+
+	file = 0,
+	folder = 1,
+	executable = 2
+
+} fileType;
+
 typedef struct {
 
 	char fileName[8];
@@ -54,7 +62,7 @@ typedef struct {
 
 } sectorByte;
 
-
+extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory  currentDirectory;
 

@@ -89,7 +89,27 @@ void sysinfo() {
 
 void dir() {
 
+    printString("\n\n");
+    int len = strlen(currentDirectory.metadata.directoryName);
+    int files = 0;
+    int folders = 0;
+    int executables = 0;
+
+    for (int i = 0; i < len; i++) {
+
+        printChar('-');
+
+    }
+
+    newline();
     printString(currentDirectory.metadata.directoryName);
+    newline();
+
+    for (int i = 0; i < len; i++) {
+
+        printChar('-');
+
+    }
 
     char fileCount = currentDirectory.metadata.fileCount;
     for (unsigned short i = 0; i < fileCount; i++) {
@@ -97,8 +117,40 @@ void dir() {
         printString(currentDirectory.entries[i].fileName);
         newline();
 
+        char flag = currentDirectory.entries[i].fileSizeAndFlags >> 30;
+
+        switch ((fileType)flag) {
+
+        case (file):
+            files++;
+
+        case (folder):
+            folders++;
+
+        case (executable):
+            executables++;
+
+        }
+
     }
 
+    char numbuff[32];
+
+    newline();
+    newline();
+    printString("Files = ");
+    intToStr(files, numbuff);
+    printString(numbuff);
+    newline();
+
+    printString("Folders = ");
+    intToStr(files, numbuff);
+    printString(numbuff);
+    newline();
+    
+    printString("Executables = ");
+    intToStr(files, numbuff);
+    printString(numbuff);
     newline();
 
 }
