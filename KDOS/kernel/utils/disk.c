@@ -44,7 +44,7 @@ void writeToFilePathBuffer(char* directoryName) {
 
     if (filePathBufferIndex >= sizeof(filePathBuffer) || sizeof(filePathBuffer) - filePathBufferIndex <= strlen(directoryName)) {
 
-        filePathBufferIndex += strlen(directoryName);
+        filePathBufferIndex += strlen(directoryName) + 1;
         printString(filePathBuffer);
         newline();
         char numbuff[10];
@@ -71,8 +71,20 @@ void writeToFilePathBuffer(char* directoryName) {
 
 void eraseFromFilePathBuffer(const char* directoryName) {
     
-    if (filePathBufferIndex > sizeof(filePathBuffer))
+    if (filePathBufferIndex > sizeof(filePathBuffer)) {
+        
+        filePathBufferIndex -= strlen(directoryName) + 1;
+        printString(filePathBuffer);
+        newline();
+
+        char numbuff[10];
+        intToStr(filePathBufferIndex, numbuff);
+        printString(numbuff);
+
+        newline();
         return;
+    
+    }
 
     chrcpy(filePathBuffer + (filePathBufferIndex - strlen(directoryName)) - 1, '\0', strlen(directoryName) + 1);
     printString(filePathBuffer);
@@ -94,14 +106,14 @@ void initRoot() {
     currentDirectory = *((directory*)sectorBuffer);
     directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
     
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 68; i++) {
 
         writeToFilePathBuffer(currentDirectory.metadata.directoryName);
         blockingInput();
 
     }
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 68; i++) {
 
         eraseFromFilePathBuffer(currentDirectory.metadata.directoryName);
         blockingInput();
