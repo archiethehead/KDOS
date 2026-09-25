@@ -29,6 +29,24 @@ char strequal(const char* stringOne, const char* stringTwo) {
 
 }
 
+int strcpy(char* dest, unsigned long long destsz, char* src) {
+
+    if (!destsz || !(*src))
+        return 0;
+
+    unsigned long long charsCopied = 0;
+
+    while(src[charsCopied] != '\0' && charsCopied < (destsz - 1)) {
+
+        dest[charsCopied] = src[charsCopied];
+        charsCopied++;
+
+    }
+    
+    dest[charsCopied] = '\0';
+    return charsCopied;
+
+}
 
 // GeeksforGeeks (2024). 
 // How to Convert an Integer to a String in C? 

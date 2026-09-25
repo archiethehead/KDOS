@@ -3,6 +3,7 @@
 
 int strlen(const char* string);
 char strequal(const char* stringOne, const char* stringTwo);
+int strcpy(char* dest, unsigned long long destsz, char* src);
 void intToStr(int N, char *str);
 void ulongToStr(unsigned long N, char *str);
 

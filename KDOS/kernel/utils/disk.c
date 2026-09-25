@@ -6,7 +6,12 @@
 
 sectorByte sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
 diskAddressPacket kernelSectorBufferInformation;
+
 directory currentDirectory;
+char filePathBuffer[256] = { 0 };
+unsigned char filePathBufferIndex = 0;
+unsigned long directoryBuffer[30];
+unsigned char directoryBufferIndex = 0;
 
 diskAddressPacket kernelSectorBufferInformation = {
 
@@ -35,9 +40,30 @@ void readSector(unsigned long long LBA) {
 
 }
 
+void writeToFilePathBuffer(const char* directoryName) {
+
+    if (filePathBufferIndex >= sizeof(filePathBuffer) || sizeof(filePathBuffer) - filePathBufferIndex <= strlen(directoryName)) {
+
+        filePathBufferIndex += strlen(directoryName);
+        return;
+
+    }
+
+    strcpy(filePathBuffer + filePathBufferIndex, sizeof(filePathBuffer) - filePathBufferIndex, directoryName);
+    filePathBufferIndex += strlen(directoryName) + 1;
+    filePathBuffer[--filePathBufferIndex] = '\\';
+    filePathBufferIndex++;
+    printString(filePathBuffer);
+    newline();
+
+}
+
 void initRoot() {
 
     readSector(ROOT_DIRECTORY_SECTOR);
     currentDirectory = *((directory*)sectorBuffer);
+    directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
+    writeToFilePathBuffer(currentDirectory.metadata.directoryName);
+    writeToFilePathBuffer(currentDirectory.metadata.directoryName);
 
 }

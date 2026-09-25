@@ -117,6 +117,6 @@ void executeCommand(const char* userInput) {
     }
 
     printString(userInput);
-    printString((char*)" is not a recognised command\n");
+    printString(" is not a recognised command\n");
 
 }
