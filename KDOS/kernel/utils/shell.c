@@ -7,7 +7,8 @@ const command shellCommands[] = {
 
     {"exit", &exit},
     {"sysinfo", &sysinfo},
-    {"dir", &dir}
+    {"dir", &dir},
+    {"cls", &clrscr}
 
 };
 
@@ -88,12 +89,12 @@ void sysinfo() {
 
 void dir() {
 
-    printString(currentDirectory.Metadata.DirectoryName);
+    printString(currentDirectory.metadata.directoryName);
 
-    char fileCount = currentDirectory.Metadata.FileCount;
+    char fileCount = currentDirectory.metadata.fileCount;
     for (unsigned short i = 0; i < fileCount; i++) {
 
-        printString(currentDirectory.Entries[i].FileName);
+        printString(currentDirectory.entries[i].fileName);
         newline();
 
     }

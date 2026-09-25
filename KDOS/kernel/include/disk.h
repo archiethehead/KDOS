@@ -5,37 +5,37 @@
 
 typedef struct {
 
-	char FileName[8];
-	unsigned long DiskSector;
-	unsigned long FileSizeAndFlags;
+	char fileName[8];
+	unsigned long diskSector;
+	unsigned long fileSizeAndFlags;
 
-} DirectoryEntry;
+} directoryEntry;
 
 typedef struct {
 
-	unsigned long Size;
+	unsigned long size;
 
-} FileTag;
+} fileTag;
 
 typedef struct {
 	
-	char DirectoryName[8];
-	unsigned short FileCount;
-	unsigned long CurrentDir;
-	unsigned long ParentDir;
-	unsigned long NextDir;
+	char directoryName[8];
+	unsigned short fileCount;
+	unsigned long currentDir;
+	unsigned long parentDir;
+	unsigned long nextDir;
 
-} DirectoryMetada;
+} directoryMetadata;
 
 typedef struct {
 
-	FileTag Header;
-	DirectoryMetada Metadata;
-	DirectoryEntry Entries[30];
+	fileTag header;
+	directoryMetadata metadata;
+	directoryEntry entries[30];
 	char padding[2];
-	FileTag Footer;
+	fileTag footer;
 
-} Directory;
+} directory ;
 
 typedef struct {
 
@@ -56,8 +56,8 @@ typedef struct {
 
 
 extern diskAddressPacket kernelSectorBufferInformation;
-extern Directory currentDirectory;
+extern directory  currentDirectory;
 
-void readFolder(unsigned long long LBA);
+void initRoot();
 
 #endif // ifdef DISK_H

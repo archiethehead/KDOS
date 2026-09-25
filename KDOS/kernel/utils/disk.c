@@ -2,9 +2,11 @@
 #include "memory.h"
 #include "console-io.h"
 
+#define ROOT_DIRECTORY_SECTOR 33
+
 sectorByte sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
 diskAddressPacket kernelSectorBufferInformation;
-Directory currentDirectory;
+directory currentDirectory;
 
 diskAddressPacket kernelSectorBufferInformation = {
 
@@ -17,11 +19,11 @@ diskAddressPacket kernelSectorBufferInformation = {
 
 };
 
-void readFolder(unsigned long long LBA) {
+void readSector(unsigned long long LBA) {
 
     unsigned short kernelSectorBufferInformationAddress = (unsigned short)&kernelSectorBufferInformation;
-
     kernelSectorBufferInformation.logicalBaseAddress = LBA;
+    
     __asm {
 
         mov ah, 0x42
@@ -31,6 +33,11 @@ void readFolder(unsigned long long LBA) {
 
     }
 
-    currentDirectory = *((Directory*)sectorBuffer);
+}
+
+void initRoot() {
+
+    readSector(ROOT_DIRECTORY_SECTOR);
+    currentDirectory = *((directory*)sectorBuffer);
 
 }

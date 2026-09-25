@@ -4,6 +4,7 @@
 #include <string.h>
 
 FILE* Fileptr;
+const size_t Megabyte = 1048576;
 const size_t MBRSize = 512;
 const size_t KernelTargetSize = 16384;
 const char* MBRName = "build/boot.bin";
@@ -22,7 +23,7 @@ typedef struct {
 
 typedef struct {
 
-	uint32_t Size;
+	uint32_t SizeAndFlags;
 
 } FileTag;
 
@@ -123,8 +124,10 @@ int main() {
 		fwrite(KernelLeftoverSpace, KernelTargetSize - KernelSize, 1,Fileptr);
 
 	Directory RootDirectory;
-	RootDirectory.Header.Size = 3 << 30;
-	RootDirectory.Header.Size |= 1;
+	RootDirectory.Header.SizeAndFlags = 3 << 30;
+	RootDirectory.Header.SizeAndFlags |= 1;
+	RootDirectory.Metadata.ParentDir = 0;
+	RootDirectory.Metadata.NextDir = 0;
 	RootDirectory.Footer = RootDirectory.Header;
 	memcpy_s(RootDirectory.Metadata.DirectoryName, sizeof(RootDirectory.Metadata.DirectoryName), "Root", sizeof("Root"));
 	RootDirectory.Metadata.FileCount = 0;
@@ -132,6 +135,20 @@ int main() {
 	RootDirectory.padding[1] = 'b';
 
 	fwrite(&RootDirectory, sizeof(RootDirectory), 1, Fileptr);
+
+	FileTag FilesystemHeader;
+	FilesystemHeader.SizeAndFlags = 1U << 31;
+	FilesystemHeader.SizeAndFlags |= (Megabyte / 512U);
+
+	uint8_t* FreeSpace = (uint8_t*)malloc(Megabyte);
+	if (!FreeSpace)
+		return EXIT_FAILURE;
+
+	memset(FreeSpace, 1, Megabyte);
+
+	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
+	fwrite(FreeSpace, Megabyte, 1, Fileptr);
+	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
 
 	return EXIT_SUCCESS;	
 
