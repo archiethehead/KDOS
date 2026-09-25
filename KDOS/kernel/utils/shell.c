@@ -1,11 +1,13 @@
-#include "shell.h"
 #include "console-io.h"
+#include "shell.h"
+#include "disk.h"
 #include "memory.h"
 
 const command shellCommands[] = {
 
     {"exit", &exit},
-    {"sysinfo", &sysinfo}
+    {"sysinfo", &sysinfo},
+    {"dir", &dir}
 
 };
 
@@ -84,6 +86,22 @@ void sysinfo() {
 
 }
 
+void dir() {
+
+    printString(currentDirectory.Metadata.DirectoryName);
+
+    char fileCount = currentDirectory.Metadata.FileCount;
+    for (unsigned short i = 0; i < fileCount; i++) {
+
+        printString(currentDirectory.Entries[i].FileName);
+        newline();
+
+    }
+
+    newline();
+
+}
+
 void executeCommand(const char* userInput) {
 
     for (int i = 0; i < COMMAND_COUNT; i++) {
@@ -98,6 +116,6 @@ void executeCommand(const char* userInput) {
     }
 
     printString(userInput);
-    printString(" is not a recognised command\n");
+    printString((char*)" is not a recognised command\n");
 
 }

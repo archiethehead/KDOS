@@ -4,6 +4,8 @@ global _cstart_
 global _KERNEL_ADDRESS
 extern kernelMain_
 
+segment .stack
+
 section .text
 _cstart_:
 

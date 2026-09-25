@@ -50,7 +50,7 @@ char blockingInput() {
 
 }
 
-void printString(char* string) {
+void printString(const char* string) {
 
     while (*string != '\0') {
 

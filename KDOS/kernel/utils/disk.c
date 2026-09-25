@@ -3,6 +3,8 @@
 #include "console-io.h"
 
 sectorByte sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
+diskAddressPacket kernelSectorBufferInformation;
+Directory currentDirectory;
 
 diskAddressPacket kernelSectorBufferInformation = {
 
@@ -17,10 +19,6 @@ diskAddressPacket kernelSectorBufferInformation = {
 
 void readFolder(unsigned long long LBA) {
 
-    char tempstr[10];
-    int temp = (int)sectorBuffer[0].data;
-    intToStr(temp, tempstr);
-    printString(tempstr);
     unsigned short kernelSectorBufferInformationAddress = (unsigned short)&kernelSectorBufferInformation;
 
     kernelSectorBufferInformation.logicalBaseAddress = LBA;
@@ -33,8 +31,6 @@ void readFolder(unsigned long long LBA) {
 
     }
 
-    temp = (int)sectorBuffer[0].data;
-    intToStr(temp, tempstr);
-    printString(tempstr);
-    
+    currentDirectory = *((Directory*)sectorBuffer);
+
 }

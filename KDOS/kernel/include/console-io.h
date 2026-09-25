@@ -3,6 +3,8 @@
 
 void clrscr();
 
+void printString(const char* string);
+
 inline void printChar(char c) {
 
     __asm {
@@ -17,12 +19,10 @@ inline void printChar(char c) {
 
 inline void newline() {
 
-    printChar('\n');
-    printChar('\r');
+    printString("\n");
 
 }
 
-void printString(char* string);
 char blockingInput();
 
 #endif // ifdef CONSOLE_IO_H

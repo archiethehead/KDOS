@@ -3,8 +3,6 @@
 
 #define SECTOR_BUFFER_SIZE 0x0001
 
-#pragma pack(push, 1)
-
 typedef struct {
 
 	char FileName[8];
@@ -56,10 +54,10 @@ typedef struct {
 
 } sectorByte;
 
-diskAddressPacket kernelSectorBufferInformation;
+
+extern diskAddressPacket kernelSectorBufferInformation;
+extern Directory currentDirectory;
 
 void readFolder(unsigned long long LBA);
-
-#pragma pack(pop)
 
 #endif // ifdef DISK_H

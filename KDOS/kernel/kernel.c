@@ -3,6 +3,7 @@
 #include "disk.h"
 
 #define USER_INPUT_BUFFER_SIZE 64
+#define ROOT_FOLDER_SECTOR 33
 
 extern int KERNEL_ADDRESS;
 int userInputBufferIndex = 0;
@@ -14,7 +15,7 @@ void kernelMain(void) {
     clrscr();
     printString("Welcome to KDOS !\n");
 
-    readFolder(33);
+    readFolder(ROOT_FOLDER_SECTOR);
 
     while (1) {
 
