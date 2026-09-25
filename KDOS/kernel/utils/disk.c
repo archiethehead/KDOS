@@ -9,7 +9,7 @@ diskAddressPacket kernelSectorBufferInformation;
 
 directory currentDirectory;
 char filePathBuffer[256] = { 0 };
-unsigned char filePathBufferIndex = 0;
+int filePathBufferIndex = 0;
 unsigned long directoryBuffer[30];
 unsigned char directoryBufferIndex = 0;
 
@@ -40,11 +40,16 @@ void readSector(unsigned long long LBA) {
 
 }
 
-void writeToFilePathBuffer(const char* directoryName) {
+void writeToFilePathBuffer(char* directoryName) {
 
     if (filePathBufferIndex >= sizeof(filePathBuffer) || sizeof(filePathBuffer) - filePathBufferIndex <= strlen(directoryName)) {
 
         filePathBufferIndex += strlen(directoryName);
+        printString(filePathBuffer);
+        newline();
+        char numbuff[10];
+        intToStr(filePathBufferIndex, numbuff);
+        printString(numbuff);
         return;
 
     }
@@ -56,6 +61,31 @@ void writeToFilePathBuffer(const char* directoryName) {
     printString(filePathBuffer);
     newline();
 
+    char numbuff[10];
+    intToStr(filePathBufferIndex, numbuff);
+    printString(numbuff);
+
+    newline();
+
+}
+
+void eraseFromFilePathBuffer(const char* directoryName) {
+    
+    if (filePathBufferIndex > sizeof(filePathBuffer))
+        return;
+
+    chrcpy(filePathBuffer + (filePathBufferIndex - strlen(directoryName)) - 1, '\0', strlen(directoryName) + 1);
+    printString(filePathBuffer);
+    newline();
+
+    char numbuff[10];
+    intToStr(filePathBufferIndex, numbuff);
+    printString(numbuff);
+
+    newline();
+
+    filePathBufferIndex -= strlen(directoryName) + 1;
+
 }
 
 void initRoot() {
@@ -63,7 +93,19 @@ void initRoot() {
     readSector(ROOT_DIRECTORY_SECTOR);
     currentDirectory = *((directory*)sectorBuffer);
     directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
-    writeToFilePathBuffer(currentDirectory.metadata.directoryName);
-    writeToFilePathBuffer(currentDirectory.metadata.directoryName);
+    
+    for (int i = 0; i < 30; i++) {
+
+        writeToFilePathBuffer(currentDirectory.metadata.directoryName);
+        blockingInput();
+
+    }
+
+        for (int i = 0; i < 30; i++) {
+
+        eraseFromFilePathBuffer(currentDirectory.metadata.directoryName);
+        blockingInput();
+
+    }
 
 }

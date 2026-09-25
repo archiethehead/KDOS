@@ -36,7 +36,7 @@ int strcpy(char* dest, unsigned long long destsz, char* src) {
 
     unsigned long long charsCopied = 0;
 
-    while(src[charsCopied] != '\0' && charsCopied < (destsz - 1)) {
+    while (src[charsCopied] != '\0' && charsCopied < (destsz - 1)) {
 
         dest[charsCopied] = src[charsCopied];
         charsCopied++;
@@ -46,6 +46,25 @@ int strcpy(char* dest, unsigned long long destsz, char* src) {
     dest[charsCopied] = '\0';
     return charsCopied;
 
+}
+
+int chrcpy(char* dest, char c, unsigned long long count) {
+
+    if (!count)
+        return 0;
+
+    unsigned long long charsCopied = 0;
+
+    while (count--) {
+
+        *dest = c;
+        dest++;
+        charsCopied++;
+
+    }
+
+    return charsCopied;
+    
 }
 
 // GeeksforGeeks (2024). 
