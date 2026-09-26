@@ -62,13 +62,14 @@ typedef struct {
 
 } sectorByte;
 
+extern unsigned char hardDriveCount;
+extern unsigned char floppyDriveCount;
 extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
-extern directory  currentDirectory;
+extern directory currentDirectory;
 
 void outputFilepath();
 void initRoot();
-void verifyDrives();
 void initDrives();
 
 #endif // ifdef DISK_H

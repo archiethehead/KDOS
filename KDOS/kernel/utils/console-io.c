@@ -1,4 +1,5 @@
 #include "console-io.h"
+#include "memory.h"
 
 void clrscr() {
 
@@ -61,5 +62,13 @@ void printString(const char* string) {
         string++;
 
     }
+
+}
+
+void printInt(int N) {
+
+    char numbuff[32];
+    intToStr(N, numbuff);
+    printString(numbuff);
 
 }

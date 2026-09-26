@@ -7,11 +7,11 @@
 sectorByte sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
 diskAddressPacket kernelSectorBufferInformation;
 
-directory currentDirectory;
-char filePathBuffer[256] = { 0 };
-int filePathBufferIndex = 0;
+unsigned char hardDriveCount;
+unsigned char floppyDriveCount;
 unsigned long directoryBuffer[30];
 unsigned char directoryBufferIndex = 0;
+directory currentDirectory;
 
 diskAddressPacket kernelSectorBufferInformation = {
 
@@ -98,7 +98,7 @@ void initRoot() {
 
 }
 
-unsigned char verifyDrive(char driveNum) {
+unsigned char getHardDriveCount() {
 
     unsigned char res = 0;
     
@@ -112,7 +112,7 @@ unsigned char verifyDrive(char driveNum) {
         push si
         push di
 
-        mov dl, driveNum
+        mov dl, 0x80
         mov ah, 0x08
         xor di, di
         mov es, di
@@ -133,8 +133,33 @@ unsigned char verifyDrive(char driveNum) {
 
 }
 
+unsigned char getFloppyDriveCount() {
+
+    unsigned char res = 0;
+
+    __asm {
+
+        int 0x11
+        test ax, 1
+        jz .doesnt_exist
+        
+        mov cl, 6
+        shr ax, cl
+        and ax, 0x03
+        add ax, 1
+        mov res, al
+
+        .doesnt_exist:
+
+    }
+
+    return res;
+
+}
+
 void initDrives() {
 
-    unsigned char count = verifyDrive(0x80);
+    hardDriveCount = getHardDriveCount();
+    floppyDriveCount = getFloppyDriveCount();
 
 }

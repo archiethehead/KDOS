@@ -5,6 +5,8 @@ void clrscr();
 
 void printString(const char* string);
 
+void printInt(int N);
+
 inline void printChar(char c) {
 
     __asm {

@@ -61,29 +61,13 @@ void sysinfo() {
     
     }
     
-    intToStr(conventionalMemory, numberBuffer);
-    printString(numberBuffer);
+    printInt(conventionalMemory);
     printString(" KiB of usable memory\n");
 
-    char numberOfConnectedDrives = 0;
-
-    __asm {
-
-        xor ax, ax
-        mov es, ax
-        mov di, ax
-
-        mov ah, 0x08
-        mov dl, 0x80
-        int 0x13
-
-        mov numberOfConnectedDrives, dl
-
-    }
-
-    intToStr(numberOfConnectedDrives, numberBuffer);
-    printString(numberBuffer);
-    printString(" drive(s) connected\n");
+    printInt(hardDriveCount);
+    printString(" Hard Drive(s) connected\n");
+    printInt(floppyDriveCount);
+    printString(" Floppy Drive(s) connected\n");
 
 }
 
@@ -138,7 +122,7 @@ void dir() {
 
     newline();
     newline();
-    
+
     printString("Files = ");
     intToStr(files, numbuff);
     printString(numbuff);
