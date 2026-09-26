@@ -15,8 +15,8 @@ void kernelMain(void) {
     printString("Welcome to KDOS !\n\n"); 
     initRoot();
 
-    printString(filePathBuffer);
-    printChar(' ');
+    outputFilepath();
+    printString(" -> ");
 
     while (1) {
 
@@ -36,8 +36,8 @@ void kernelMain(void) {
             newline();
             executeCommand(userInputBuffer);
             newline();
-            printString(filePathBuffer);
-            printChar(' ');
+            outputFilepath();
+            printString(" -> ");
 
             break;
 

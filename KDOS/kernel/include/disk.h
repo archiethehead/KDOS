@@ -66,6 +66,9 @@ extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory  currentDirectory;
 
+void outputFilepath();
 void initRoot();
+void verifyDrives();
+void initDrives();
 
 #endif // ifdef DISK_H

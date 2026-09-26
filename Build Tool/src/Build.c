@@ -129,9 +129,9 @@ int main() {
 	RootDirectory.Metadata.ParentDir = 0;
 	RootDirectory.Metadata.NextDir = 0;
 	RootDirectory.Footer = RootDirectory.Header;
-	memcpy_s(RootDirectory.Metadata.DirectoryName, sizeof(RootDirectory.Metadata.DirectoryName), "Root", sizeof("Root"));
+	memcpy_s(RootDirectory.Metadata.DirectoryName, sizeof(RootDirectory.Metadata.DirectoryName), "$", sizeof("$"));
 	RootDirectory.Metadata.FileCount = 0;
-	RootDirectory.padding[0] = 'a';
+	RootDirectory.padding[0] = 'a';	
 	RootDirectory.padding[1] = 'b';
 
 	fwrite(&RootDirectory, sizeof(RootDirectory), 1, Fileptr);

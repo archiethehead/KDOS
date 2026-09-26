@@ -40,41 +40,101 @@ void readSector(unsigned long long LBA) {
 
 }
 
-void writeToFilePathBuffer(char* directoryName) {
+void outputFilepath() {
 
-    if (filePathBufferIndex >= sizeof(filePathBuffer) || sizeof(filePathBuffer) - filePathBufferIndex <= strlen(directoryName)) {
+    directoryMetadata metadataBuffer = currentDirectory.metadata;
 
-        filePathBufferIndex += strlen(directoryName) + 1;
-        return;
+    char* directoryName = currentDirectory.metadata.directoryName;
+    int directoryCount = 1;
+
+    __asm {
+
+        push directoryName
 
     }
 
-    strcpy(filePathBuffer + filePathBufferIndex, sizeof(filePathBuffer) - filePathBufferIndex, directoryName);
-    filePathBufferIndex += strlen(directoryName) + 1;
-    filePathBuffer[--filePathBufferIndex] = '\\';
-    filePathBufferIndex++;
+    while (currentDirectory.metadata.parentDir != 0) {
 
-}
+        readSector(currentDirectory.metadata.parentDir);
+        currentDirectory.metadata = ((directory*)sectorBuffer)->metadata;
+        directoryName = currentDirectory.metadata.directoryName;
 
-void eraseFromFilePathBuffer(const char* directoryName) {
-    
-    if (filePathBufferIndex > sizeof(filePathBuffer)) {
+        __asm {
+
+            push directoryName
+
+        }
+
+        directoryCount++;
+
+    }
+
+    for (int i = 0; i < directoryCount; i++) {
+
+        __asm {
+
+            pop directoryName
+
+        }
+
+        printString(directoryName);
         
-        filePathBufferIndex -= strlen(directoryName) + 1;
-        return;
-    
+        if (directoryCount - i != 1)
+            printChar('.');
+
     }
 
-    chrcpy(filePathBuffer + (filePathBufferIndex - strlen(directoryName)) - 1, '\0', strlen(directoryName) + 1);
-    filePathBufferIndex -= strlen(directoryName) + 1;
+    currentDirectory.metadata = metadataBuffer;
 
 }
 
 void initRoot() {
 
+    initDrives();
     readSector(ROOT_DIRECTORY_SECTOR);
     currentDirectory = *((directory*)sectorBuffer);
+    currentDirectory.metadata.parentDir = 0x0000;
     directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
-    writeToFilePathBuffer(currentDirectory.metadata.directoryName);
+
+}
+
+unsigned char verifyDrive(char driveNum) {
+
+    unsigned char res = 0;
+    
+    __asm {
+
+        push ax
+        push bx
+        push cx
+        push dx
+        push es
+        push si
+        push di
+
+        mov dl, driveNum
+        mov ah, 0x08
+        xor di, di
+        mov es, di
+        int 0x13
+        jc .doesnt_exist
+        mov res, dl
+
+        .doesnt_exist:
+        pop es
+        pop dx
+        pop cx
+        pop bx
+        pop ax
+
+    }
+
+    return res;
+
+}
+
+void initDrives() {
+
+    unsigned char count = verifyDrive(0x80);
 
 }

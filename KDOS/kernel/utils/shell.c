@@ -138,6 +138,7 @@ void dir() {
 
     newline();
     newline();
+    
     printString("Files = ");
     intToStr(files, numbuff);
     printString(numbuff);
