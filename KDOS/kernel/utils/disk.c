@@ -1,6 +1,7 @@
 #include "disk.h"
 #include "memory.h"
 #include "console-io.h"
+#include "bool.h"
 
 #define ROOT_DIRECTORY_SECTOR 33
 
@@ -13,20 +14,29 @@ unsigned long directoryBuffer[30];
 unsigned char directoryBufferIndex = 0;
 directory currentDirectory;
 
+driveSymbol driveSymbols[] = {
+
+    {flpOne, "~I"},
+    {flpTwo, "~II"},
+    {hddOne, "#I"},
+    {hddTwo, "#II"}
+
+};
+
 diskAddressPacket kernelSectorBufferInformation = {
 
     0x10,
     0x00,
     SECTOR_BUFFER_SIZE,
-    (unsigned short)&sectorBuffer,
+    (uint16_t)&sectorBuffer,
     0x1000,
     0x00000000
 
 };
 
-void readSector(unsigned long long LBA) {
+void readSector(uint64_t LBA) {
 
-    unsigned short kernelSectorBufferInformationAddress = (unsigned short)&kernelSectorBufferInformation;
+    uint16_t kernelSectorBufferInformationAddress = (uint16_t)&kernelSectorBufferInformation;
     kernelSectorBufferInformation.logicalBaseAddress = LBA;
     
     __asm {
@@ -45,7 +55,7 @@ void outputFilepath() {
     directoryMetadata metadataBuffer = currentDirectory.metadata;
 
     char* directoryName = currentDirectory.metadata.directoryName;
-    int directoryCount = 1;
+    uint16_t directoryCount = 1;
 
     __asm {
 
@@ -93,14 +103,13 @@ void initRoot() {
     initDrives();
     readSector(ROOT_DIRECTORY_SECTOR);
     currentDirectory = *((directory*)sectorBuffer);
-    currentDirectory.metadata.parentDir = 0x0000;
     directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
 
 }
 
-unsigned char getHardDriveCount() {
+uint8_t getHardDriveCount() {
 
-    unsigned char res = 0;
+    uint8_t res = 0;
     
     __asm {
 
@@ -133,9 +142,9 @@ unsigned char getHardDriveCount() {
 
 }
 
-unsigned char getFloppyDriveCount() {
+uint8_t getFloppyDriveCount() {
 
-    unsigned char res = 0;
+    uint8_t res = 0;
 
     __asm {
 
@@ -159,7 +168,19 @@ unsigned char getFloppyDriveCount() {
 
 void initDrives() {
 
-    hardDriveCount = getHardDriveCount();
     floppyDriveCount = getFloppyDriveCount();
+    hardDriveCount = getHardDriveCount();
+
+    for (int i = 0; i < floppyDriveCount; i++) {
+
+        driveSymbols[i].numAndFlag |= true;
+
+    }
+
+    for (int i = 0; i < hardDriveCount; i++) {
+
+        driveSymbols[i + 2].numAndFlag |= true;
+
+    }
 
 }

@@ -29,12 +29,12 @@ char strequal(const char* stringOne, const char* stringTwo) {
 
 }
 
-int strcpy(char* dest, unsigned long long destsz, char* src) {
+int strcpy(char* dest, size_t destsz, char* src) {
 
     if (!destsz || !(*src))
         return 0;
 
-    unsigned long long charsCopied = 0;
+    size_t charsCopied = 0;
 
     while (src[charsCopied] != '\0' && charsCopied < (destsz - 1)) {
 
@@ -48,12 +48,12 @@ int strcpy(char* dest, unsigned long long destsz, char* src) {
 
 }
 
-int chrcpy(char* dest, char c, unsigned long long count) {
+int chrcpy(char* dest, char c, size_t count) {
 
     if (!count)
         return 0;
 
-    unsigned long long charsCopied = 0;
+    size_t charsCopied = 0;
 
     while (count--) {
 
@@ -141,3 +141,5 @@ void ulongToStr(unsigned long N, char *str) {
     }
     
 }
+
+

@@ -72,3 +72,12 @@ void printInt(int N) {
     printString(numbuff);
 
 }
+
+void cdecl formout(char* format, ...) {
+
+    char formoutBuffer[FORMOUT_BUFFER_SIZE];
+    char* firstArg = (char*)&format + sizeof(format);
+
+    
+
+}

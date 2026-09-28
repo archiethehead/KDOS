@@ -1,37 +1,49 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "int.h"
+
 #define SECTOR_BUFFER_SIZE 0x0001
+#define ACTIVE_DRIVE 4
 
 typedef enum {	
 
-	file = 0,
-	folder = 1,
-	executable = 2
+	file 		= 0,
+	folder 		= 1,
+	executable 	= 2
 
 } fileType;
+
+typedef enum {
+
+	flpOne	= 0,
+	flpTwo 	= 1,
+	hddOne	= 2,
+	hddTwo	= 3
+
+} driveNum;
 
 typedef struct {
 
 	char fileName[8];
-	unsigned long diskSector;
-	unsigned long fileSizeAndFlags;
+	uint32_t diskSector;
+	uint32_t fileSizeAndFlags;
 
 } directoryEntry;
 
 typedef struct {
 
-	unsigned long size;
+	uint32_t size;
 
 } fileTag;
 
 typedef struct {
 	
 	char directoryName[8];
-	unsigned short fileCount;
-	unsigned long currentDir;
-	unsigned long parentDir;
-	unsigned long nextDir;
+	uint16_t fileCount;
+	uint32_t currentDir;
+	uint32_t parentDir;
+	uint32_t nextDir;
 
 } directoryMetadata;
 
@@ -47,23 +59,30 @@ typedef struct {
 
 typedef struct {
 
-	unsigned char sizeOfPacket;
-	unsigned char reserved;
-	unsigned short numberOfSectorsToTransfer;
-	unsigned short bufferOffset;
-	unsigned short segmentOffset;
-	unsigned long long logicalBaseAddress;
+	uint8_t sizeOfPacket;
+	uint8_t reserved;
+	uint16_t numberOfSectorsToTransfer;
+	uint16_t bufferOffset;
+	uint16_t segmentOffset;
+	uint64_t logicalBaseAddress;
 
 } diskAddressPacket;
 
 typedef struct {
 
-	unsigned char data;
+	uint8_t data;
 
 } sectorByte;
 
-extern unsigned char hardDriveCount;
-extern unsigned char floppyDriveCount;
+typedef struct {
+
+	driveNum numAndFlag;
+	char symbol[4];
+
+} driveSymbol;
+
+extern uint8_t hardDriveCount;
+extern uint8_t floppyDriveCount;
 extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory currentDirectory;

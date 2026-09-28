@@ -1,11 +1,15 @@
 #ifndef CONSOLE_IO_H
 #define CONSOLE_IO_H
 
+#define FORMOUT_BUFFER_SIZE 512
+
 void clrscr();
 
 void printString(const char* string);
 
 void printInt(int N);
+
+void cdecl formout(char* format, ...);
 
 inline void printChar(char c) {
 

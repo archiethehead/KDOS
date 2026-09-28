@@ -13,6 +13,15 @@ const char* KernName = "build/kernel.bin";
 
 #pragma pack(push, 1)
 
+typedef enum drivenum {
+
+	flpOne = 0,
+	flpTwo = 1,
+	hddOne = 2,
+	hddTwo = 3
+
+} driveNum;
+
 typedef struct {
 
 	char FileName[8];
@@ -126,8 +135,9 @@ int main() {
 	Directory RootDirectory;
 	RootDirectory.Header.SizeAndFlags = 3 << 30;
 	RootDirectory.Header.SizeAndFlags |= 1;
-	RootDirectory.Metadata.ParentDir = 0;
-	RootDirectory.Metadata.NextDir = 0;
+	RootDirectory.Metadata.ParentDir = 0x0000;
+	RootDirectory.Metadata.NextDir = 0x0000;
+	RootDirectory.Metadata.CurrentDir = 33;
 	RootDirectory.Footer = RootDirectory.Header;
 	memcpy_s(RootDirectory.Metadata.DirectoryName, sizeof(RootDirectory.Metadata.DirectoryName), "$", sizeof("$"));
 	RootDirectory.Metadata.FileCount = 0;

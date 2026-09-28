@@ -27,9 +27,9 @@ void exit() {
 
 void sysinfo() {
 
-    unsigned long memory = 1048576L; //1 MiB
-    unsigned short oneKibBetween1and16Meg = 0;
-    unsigned short sixtyFourKibBeyond16Meg = 0;
+    uint32_t memory = 1048576L; //1 MiB
+    uint16_t oneKibBetween1and16Meg = 0;
+    uint16_t sixtyFourKibBeyond16Meg = 0;
 
     __asm {
 
@@ -40,8 +40,8 @@ void sysinfo() {
 
     }
 
-    unsigned long ULoneKibBetween1and16Meg = (unsigned long)oneKibBetween1and16Meg * 1024UL;    // to bytes
-    unsigned long ULsixtyFourKibBeyond16Meg = (unsigned long)sixtyFourKibBeyond16Meg * 65536UL; // to bytes
+    uint32_t ULoneKibBetween1and16Meg = (uint32_t)oneKibBetween1and16Meg * 1024UL;    // to bytes
+    uint32_t ULsixtyFourKibBeyond16Meg = (uint32_t)sixtyFourKibBeyond16Meg * 65536UL; // to bytes
 
     memory += ULoneKibBetween1and16Meg;
     memory += ULsixtyFourKibBeyond16Meg;
