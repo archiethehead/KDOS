@@ -1,5 +1,6 @@
 #include "memory.h"
 #include "console-io.h"
+#include "bool.h"
 
 int strlen(const char* string) {
 
@@ -73,7 +74,7 @@ int chrcpy(char* dest, char c, size_t count) {
 // Available at: https://www.geeksforgeeks.org/c/how-to-convert-an-integer-to-a-string-in-c/ 
 // [Accessed 22 Sept. 2026].
 
-void intToStr(int N, char *str) {
+static void numToStr(int64_t N, char *str, bool isNegative) {
     
     // base case
     if (N == 0) {
@@ -84,25 +85,51 @@ void intToStr(int N, char *str) {
 
     }
 
-    int i = 0;
-    int sign = N;
-    if (N < 0)
-        N = -N;
+    uint16_t NWords[4];
+    NWords[0] = (uint16_t)N;
+    NWords[1] = (uint16_t)(N >> 16);
+    NWords[2] = (uint16_t)(N >> 32);
+    NWords[3] = (uint16_t)(N >> 48);
 
-    while (N > 0) {
-      
-        str[i++] = N % 10 + '0';
-      	N /= 10;
+    uint8_t highestWord = 3;
+    while (highestWord > 0 && NWords[highestWord] == 0)
+        highestWord--;
+
+    uint8_t i = 0;
+
+    while (true) {
+
+        uint32_t buffer32 = 0;
+        uint16_t remainder = 0;
+        bool isZero = true;
+
+        for (int8_t j = highestWord; j >= 0; j--) {
+
+            buffer32 = ((uint32_t)remainder << 16) | NWords[j];
+            NWords[j] = (uint16_t)(buffer32 / 10);
+            remainder = (uint16_t)(buffer32 % 10);
+
+            if (NWords[j] > 0)
+                isZero = false;
+
+        }
+
+        str[i++] = remainder + '0';
+
+        if (isZero)
+            break;
+
+        while (highestWord > 0 && NWords[highestWord] == 0)
+            highestWord--;
+
     } 
 
-    if (sign < 0) {
-
+    if (isNegative)
         str[i++] = '-';
-        
-    }
+
     str[i] = '\0';
 
-    for (int j = 0, k = i - 1; j < k; j++, k--) {
+    for (uint8_t j = 0, k = i - 1; j < k; j++, k--) {
 
         char temp = str[j];
         str[j] = str[k];
@@ -112,34 +139,24 @@ void intToStr(int N, char *str) {
     
 }
 
-void ulongToStr(unsigned long N, char *str) {
-    
-    // base case
-    if (N == 0) {
+void intToStr(int64_t N, char* str) {
 
-        str[0] = '0';
-        str[1] = '\0';
-        return;
+    bool isNegative = false;
+    uint64_t absoluteValue = (uint64_t)N;
 
-    }
+    if (N < 0) {
 
-    int i = 0;
-    while (N > 0) {
-      
-        str[i++] = N % 10 + '0';
-      	N /= 10;
-    } 
-
-    str[i] = '\0';
-
-    for (int j = 0, k = i - 1; j < k; j++, k--) {
-
-        char temp = str[j];
-        str[j] = str[k];
-        str[k] = temp;
+        isNegative = true;
+        absoluteValue = -(uint64_t)N;
 
     }
-    
+
+    numToStr(absoluteValue, str, isNegative);
+
+};
+
+void uintToStr(uint64_t N, char* str) {
+
+    numToStr(N, str, false);
+
 }
-
-

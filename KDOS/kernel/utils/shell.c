@@ -47,11 +47,10 @@ void sysinfo() {
     memory += ULsixtyFourKibBeyond16Meg;
     memory = memory >> 20; // x >> 20 == x / 1048576L
 
-    char numberBuffer[16];
-    ulongToStr(memory, numberBuffer);
+    char numberBuffer[32];
+    uintToStr((uint64_t)memory, numberBuffer);
     printString(numberBuffer);
     printString(" MiB of extended-memory\n");
-
      
     int conventionalMemory = 0;
     __asm {

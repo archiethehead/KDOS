@@ -68,7 +68,7 @@ void printString(const char* string) {
 void printInt(int N) {
 
     char numbuff[32];
-    intToStr(N, numbuff);
+    intToStr((int64_t)N, numbuff);
     printString(numbuff);
 
 }
@@ -77,7 +77,30 @@ void cdecl formout(char* format, ...) {
 
     char formoutBuffer[FORMOUT_BUFFER_SIZE];
     char* firstArg = (char*)&format + sizeof(format);
-
+    uint16_t index = 0;
     
+    while (*format != '\0' && index < FORMOUT_BUFFER_SIZE) {
+
+        if (*format == '%') {
+
+            switch(*(++format)) {
+
+            case 'u':
+                break;
+
+
+            }
+
+        }
+
+        else {
+
+            formoutBuffer[index++] = *format++;
+
+        }
+
+    }
+
+    formoutBuffer[index] = '\0';
 
 }
