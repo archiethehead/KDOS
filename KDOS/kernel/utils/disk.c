@@ -8,10 +8,10 @@
 sectorByte sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
 diskAddressPacket kernelSectorBufferInformation;
 
-unsigned char hardDriveCount;
-unsigned char floppyDriveCount;
-unsigned long directoryBuffer[30];
-unsigned char directoryBufferIndex = 0;
+uint8_t hardDriveCount;
+uint8_t floppyDriveCount;
+uint8_t directoryBufferIndex = 0;
+uint32_t directoryBuffer[30];
 directory currentDirectory;
 
 driveSymbol driveSymbols[] = {

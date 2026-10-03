@@ -68,6 +68,61 @@ inline size_t GetFileSize(FILE* Fileptr) {
 
 }
 
+void addFolder(uint32_t parent, const char* name) {
+
+	Directory newDir;
+	newDir.Metadata.ParentDir = parent;
+	strcpy_s(newDir.Metadata.DirectoryName, sizeof(newDir.Metadata.DirectoryName), name);
+
+	fseek(Fileptr, 34 * 512, SEEK_SET);
+
+	FileTag FileSystemSpace;
+	fread_s(&FileSystemSpace, sizeof(FileSystemSpace), sizeof(FileSystemSpace), 1, Fileptr);
+	uint32_t size;
+
+	while ((FileSystemSpace.SizeAndFlags & ~(1 << 31)) < 512 || FileSystemSpace.SizeAndFlags >> 31 != 1) {
+	
+		size = FileSystemSpace.SizeAndFlags & ~(1 << 31);
+		fseek(Fileptr, (size * 512) + (sizeof(FileTag) * 2), SEEK_CUR);
+		fread_s(&FileSystemSpace, sizeof(FileSystemSpace), sizeof(FileSystemSpace), 1, Fileptr);
+
+	}
+
+	size = FileSystemSpace.SizeAndFlags & ~(1 << 31);
+
+	newDir.Header.SizeAndFlags = 0 << 31;
+	newDir.Header.SizeAndFlags |= 1;
+	newDir.Footer = newDir.Header;
+	newDir.Metadata.CurrentDir = ftell(Fileptr) / 512;
+	newDir.Metadata.FileCount = 0;
+		
+	fseek(Fileptr, 0, SEEK_CUR);
+
+	fwrite(&newDir, sizeof(newDir), 1, Fileptr);
+	FileSystemSpace.SizeAndFlags = 1 << 31;
+	FileSystemSpace.SizeAndFlags |= (size - 1);
+	fwrite(&FileSystemSpace, sizeof(FileSystemSpace), 1, Fileptr);
+	fseek(Fileptr, ((size * 512) - 512) - 4, SEEK_CUR);
+	fwrite(&FileSystemSpace, sizeof(FileSystemSpace), 1, Fileptr);
+
+
+	Directory parentDir;
+	DirectoryEntry newFile;
+	strcpy_s(newFile.FileName, sizeof(newFile.FileName), name);
+	newFile.DiskSector = newDir.Metadata.CurrentDir;
+	newFile.FileSizeAndFlags = 3 << 30;
+	newFile.FileSizeAndFlags |= 512;
+
+	fseek(Fileptr, parent * 512, SEEK_SET);
+	fread_s(&parentDir, sizeof(newDir), sizeof(newDir), 1, Fileptr);
+	
+	parentDir.Entries[parentDir.Metadata.FileCount] = newFile;
+	parentDir.Metadata.FileCount++;
+	fseek(Fileptr, parent * 512, SEEK_SET);
+	fwrite(&parentDir, sizeof(parentDir), 1, Fileptr);
+
+}
+
 int main() {
 
 	// Read MBR
@@ -121,7 +176,7 @@ int main() {
 
 	// Write Bootable disk
 
-	fopen_s(&Fileptr, "build/KDOS.img", "wb");
+	fopen_s(&Fileptr, "build/KDOS.img", "wb+");
 
 	if (!Fileptr)
 		return EXIT_FAILURE;
@@ -133,8 +188,8 @@ int main() {
 		fwrite(KernelLeftoverSpace, KernelTargetSize - KernelSize, 1,Fileptr);
 
 	Directory RootDirectory;
-	RootDirectory.Header.SizeAndFlags = 3 << 30;
-	RootDirectory.Header.SizeAndFlags |= 1;
+	RootDirectory.Header.SizeAndFlags = 0U << 31;
+	RootDirectory.Header.SizeAndFlags |= 1U;
 	RootDirectory.Metadata.ParentDir = 0x0000;
 	RootDirectory.Metadata.NextDir = 0x0000;
 	RootDirectory.Metadata.CurrentDir = 33;
@@ -159,6 +214,8 @@ int main() {
 	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
 	fwrite(FreeSpace, Megabyte, 1, Fileptr);
 	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
+
+	addFolder(33, "binary");
 
 	return EXIT_SUCCESS;	
 

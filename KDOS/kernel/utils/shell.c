@@ -62,7 +62,6 @@ void sysinfo() {
     
     printUint(conventionalMemory);
     printString(" KiB of usable memory\n");
-
     printUint(hardDriveCount);
     printString(" Hard Drive(s) connected\n");
     printUint(floppyDriveCount);
@@ -117,24 +116,19 @@ void dir() {
 
     }
 
-    char numbuff[32];
-
     newline();
     newline();
 
-    printString("Files = ");
-    intToStr(files, numbuff);
-    printString(numbuff);
+    printUint(files);
+    printString(" File(s)");
     newline();
 
-    printString("Folders = ");
-    intToStr(files, numbuff);
-    printString(numbuff);
+    printUint(folders);
+    printString(" Folder(s)");
     newline();
     
-    printString("Executables = ");
-    intToStr(files, numbuff);
-    printString(numbuff);
+    printUint(executables);
+    printString(" Executable(s)");
     newline();
 
 }
