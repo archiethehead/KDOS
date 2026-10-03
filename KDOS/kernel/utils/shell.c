@@ -93,11 +93,12 @@ void dir() {
 
     }
 
+    newline();
+
     char fileCount = currentDirectory.metadata.fileCount;
     for (unsigned short i = 0; i < fileCount; i++) {
 
         printString(currentDirectory.entries[i].fileName);
-        newline();
 
         char flag = currentDirectory.entries[i].fileSizeAndFlags >> 30;
 
@@ -105,14 +106,20 @@ void dir() {
 
         case (file):
             files++;
+            break;
 
         case (folder):
             folders++;
+            printString("   <DIR>");
+            break;
 
         case (executable):
             executables++;
+            break;
 
         }
+
+        newline();
 
     }
 

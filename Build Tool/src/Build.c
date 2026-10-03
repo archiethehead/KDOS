@@ -110,7 +110,7 @@ void addFolder(uint32_t parent, const char* name) {
 	DirectoryEntry newFile;
 	strcpy_s(newFile.FileName, sizeof(newFile.FileName), name);
 	newFile.DiskSector = newDir.Metadata.CurrentDir;
-	newFile.FileSizeAndFlags = 3 << 30;
+	newFile.FileSizeAndFlags = 1 << 30;
 	newFile.FileSizeAndFlags |= 512;
 
 	fseek(Fileptr, parent * 512, SEEK_SET);
