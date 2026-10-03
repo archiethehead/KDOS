@@ -17,7 +17,7 @@ void kernelMain(void) {
 
     outputFilepath();
     printString(" -> ");
-
+    
     while (1) {
 
         char userInput = blockingInput();

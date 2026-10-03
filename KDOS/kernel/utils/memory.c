@@ -74,14 +74,14 @@ int chrcpy(char* dest, char c, size_t count) {
 // Available at: https://www.geeksforgeeks.org/c/how-to-convert-an-integer-to-a-string-in-c/ 
 // [Accessed 22 Sept. 2026].
 
-static void numToStr(int64_t N, char *str, bool isNegative) {
+static uint8_t numToStr(uint64_t N, char *str, bool isNegative) {
     
     // base case
     if (N == 0) {
 
         str[0] = '0';
         str[1] = '\0';
-        return;
+        return 1;
 
     }
 
@@ -136,10 +136,12 @@ static void numToStr(int64_t N, char *str, bool isNegative) {
         str[k] = temp;
 
     }
+
+    return i;
     
 }
 
-void intToStr(int64_t N, char* str) {
+uint8_t intToStr(int64_t N, char* str) {
 
     bool isNegative = false;
     uint64_t absoluteValue = (uint64_t)N;
@@ -151,12 +153,14 @@ void intToStr(int64_t N, char* str) {
 
     }
 
-    numToStr(absoluteValue, str, isNegative);
+    uint8_t res = numToStr(absoluteValue, str, isNegative);
+    return res;
 
 };
 
-void uintToStr(uint64_t N, char* str) {
+uint8_t uintToStr(uint64_t N, char* str) {
 
-    numToStr(N, str, false);
+    uint8_t res = numToStr(N, str, false);
+    return res;
 
 }

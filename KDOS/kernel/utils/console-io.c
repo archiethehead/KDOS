@@ -1,6 +1,8 @@
 #include "console-io.h"
 #include "memory.h"
 
+char formoutBuffer[FORMOUT_BUFFER_SIZE];
+
 void clrscr() {
 
     __asm {
@@ -65,7 +67,7 @@ void printString(const char* string) {
 
 }
 
-void printInt(int N) {
+void printInt(int64_t N) {
 
     char numbuff[32];
     intToStr((int64_t)N, numbuff);
@@ -73,34 +75,10 @@ void printInt(int N) {
 
 }
 
-void cdecl formout(char* format, ...) {
+void printUint(uint64_t N) {
 
-    char formoutBuffer[FORMOUT_BUFFER_SIZE];
-    char* firstArg = (char*)&format + sizeof(format);
-    uint16_t index = 0;
-    
-    while (*format != '\0' && index < FORMOUT_BUFFER_SIZE) {
-
-        if (*format == '%') {
-
-            switch(*(++format)) {
-
-            case 'u':
-                break;
-
-
-            }
-
-        }
-
-        else {
-
-            formoutBuffer[index++] = *format++;
-
-        }
-
-    }
-
-    formoutBuffer[index] = '\0';
+    char numbuff[32];
+    uintToStr((uint64_t)N, numbuff);
+    printString(numbuff);
 
 }

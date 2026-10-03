@@ -3,13 +3,14 @@
 
 #define FORMOUT_BUFFER_SIZE 512
 
+#include "int.h"
+
 void clrscr();
 
 void printString(const char* string);
 
-void printInt(int N);
-
-void cdecl formout(char* format, ...);
+void printInt(int64_t N);
+void printUint(uint64_t N);
 
 inline void printChar(char c) {
 

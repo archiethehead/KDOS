@@ -48,11 +48,11 @@ void sysinfo() {
     memory = memory >> 20; // x >> 20 == x / 1048576L
 
     char numberBuffer[32];
-    uintToStr((uint64_t)memory, numberBuffer);
+    printUint((uint64_t)memory);
     printString(numberBuffer);
     printString(" MiB of extended-memory\n");
      
-    int conventionalMemory = 0;
+    uint16_t conventionalMemory = 0;
     __asm {
 
         int 0x12
@@ -60,12 +60,12 @@ void sysinfo() {
     
     }
     
-    printInt(conventionalMemory);
+    printUint(conventionalMemory);
     printString(" KiB of usable memory\n");
 
-    printInt(hardDriveCount);
+    printUint(hardDriveCount);
     printString(" Hard Drive(s) connected\n");
-    printInt(floppyDriveCount);
+    printUint(floppyDriveCount);
     printString(" Floppy Drive(s) connected\n");
 
 }
