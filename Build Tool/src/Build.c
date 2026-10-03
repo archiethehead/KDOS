@@ -11,16 +11,7 @@ const char* MBRName = "build/boot.bin";
 const char* KernName = "build/kernel.bin";
 
 
-#pragma pack(push, 1)
-
-typedef enum drivenum {
-
-	flpOne = 0,
-	flpTwo = 1,
-	hddOne = 2,
-	hddTwo = 3
-
-} driveNum;
+#pragma pack(push, 1)	
 
 typedef struct {
 
@@ -216,6 +207,8 @@ int main() {
 	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
 
 	addFolder(33, "binary");
+	addFolder(33, "user");
+	addFolder(33, "sys");
 
 	return EXIT_SUCCESS;	
 
