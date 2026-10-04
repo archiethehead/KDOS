@@ -64,17 +64,19 @@ void addFolder(uint32_t parent, const char* name) {
 	Directory newDir;
 	newDir.Metadata.ParentDir = parent;
 	strcpy_s(newDir.Metadata.DirectoryName, sizeof(newDir.Metadata.DirectoryName), name);
+	long currentPos = (34 * 512);
 
-	fseek(Fileptr, 34 * 512, SEEK_SET);
+		fseek(Fileptr, 34 * 512, SEEK_SET);
 
 	FileTag FileSystemSpace;
 	fread_s(&FileSystemSpace, sizeof(FileSystemSpace), sizeof(FileSystemSpace), 1, Fileptr);
 	uint32_t size;
 
-	while ((FileSystemSpace.SizeAndFlags & ~(1 << 31)) < 512 || FileSystemSpace.SizeAndFlags >> 31 != 1) {
-	
+	while (FileSystemSpace.SizeAndFlags >> 31 != 1) {
+
 		size = FileSystemSpace.SizeAndFlags & ~(1 << 31);
-		fseek(Fileptr, (size * 512) + (sizeof(FileTag) * 2), SEEK_CUR);
+		currentPos += (size * 512);
+		fseek(Fileptr, currentPos, SEEK_SET);
 		fread_s(&FileSystemSpace, sizeof(FileSystemSpace), sizeof(FileSystemSpace), 1, Fileptr);
 
 	}
@@ -87,13 +89,13 @@ void addFolder(uint32_t parent, const char* name) {
 	newDir.Metadata.CurrentDir = ftell(Fileptr) / 512;
 	newDir.Metadata.FileCount = 0;
 		
-	fseek(Fileptr, 0, SEEK_CUR);
+	fseek(Fileptr, currentPos, SEEK_SET);
 
 	fwrite(&newDir, sizeof(newDir), 1, Fileptr);
 	FileSystemSpace.SizeAndFlags = 1 << 31;
 	FileSystemSpace.SizeAndFlags |= (size - 1);
 	fwrite(&FileSystemSpace, sizeof(FileSystemSpace), 1, Fileptr);
-	fseek(Fileptr, ((size * 512) - 512) - 4, SEEK_CUR);
+	fseek(Fileptr, ((size * 512) - 512), SEEK_CUR);
 	fwrite(&FileSystemSpace, sizeof(FileSystemSpace), 1, Fileptr);
 
 
