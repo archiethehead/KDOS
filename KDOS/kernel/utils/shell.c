@@ -79,35 +79,35 @@ void sysinfo() {
 
 void dir() {
 
+    char* line = "-------";
+
     newline();
     int len = strlen(currentDirectory.metadata.directoryName);
     int files = 0;
     int folders = 0;
     int executables = 0;
 
-    for (int i = 0; i < len; i++) {
-
-        printChar('-');
-
-    }
+    line[len] = '\0';
+    
+    printString(line);
 
     newline();
     printString(currentDirectory.metadata.directoryName);
     newline();
 
-    for (int i = 0; i < len; i++) {
+    printString(line);
 
-        printChar('-');
-
-    }
+    line[len] = '-';
 
     newline();
 
     char fileCount = currentDirectory.metadata.fileCount;
     for (unsigned short i = 0; i < fileCount; i++) {
 
+        char* gap = "          ";
         int len =  strlen(currentDirectory.entries[i].fileName);
         len = 10 - len;
+        *(gap + len) = '\0';
         printString(currentDirectory.entries[i].fileName);
 
         char flag = currentDirectory.entries[i].fileSizeAndFlags >> 30;
@@ -120,9 +120,7 @@ void dir() {
 
         case (folder):
 
-            for (int j = 0; j < len; j++)
-                printChar(' ');
-
+            printString(gap);
             printString("<FOLDER>");
             folders++;
 
@@ -134,24 +132,21 @@ void dir() {
 
         }
 
+        *(gap + len) = ' ';
         newline();
 
     }
 
-    newline();
-    newline();
+    printString("\n\n");
 
     printUint(files);
-    printString(" File(s)");
-    newline();
+    printString(" File(s)\n");
 
     printUint(folders);
-    printString(" Folder(s)");
-    newline();
+    printString(" Folder(s)\n");
     
     printUint(executables);
-    printString(" Executable(s)");
-    newline();
+    printString(" Executable(s)\n");
 
 }
 
