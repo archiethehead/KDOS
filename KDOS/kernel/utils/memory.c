@@ -2,7 +2,7 @@
 #include "console-io.h"
 #include "bool.h"
 
-int strlen(const char* string) {
+uint16_t strlen(const char* string) {
 
     const char* startAddress = string;
 
@@ -14,19 +14,19 @@ int strlen(const char* string) {
 
 }
 
-char strequal(const char* stringOne, const char* stringTwo) {
+bool strequal(const char* stringOne, const char* stringTwo) {
 
     while (*stringOne == *stringTwo) {
 
         if (*stringOne == '\0')
-            return 1;
+            return true;
 
         stringOne++;
         stringTwo++;
 
     }
 
-    return 0;
+    return false;
 
 }
 

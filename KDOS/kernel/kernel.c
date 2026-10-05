@@ -16,7 +16,7 @@ void kernelMain(void) {
     initRoot();
 
     outputFilepath();
-    printString(" -> ");
+    printString(": ");
     
     while (1) {
 
@@ -37,8 +37,7 @@ void kernelMain(void) {
             executeCommand(userInputBuffer);
             newline();
             outputFilepath();
-            printString(" -> ");
-
+            printString(": ");
             break;
 
         default:

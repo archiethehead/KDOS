@@ -3,7 +3,7 @@
 
 #define COMMAND_COUNT (sizeof(shellCommands) / sizeof(command))
 
-void executeCommand(const char* userInput);
+void executeCommand(char* userInput);
 
 void exit();
 void sysinfo();

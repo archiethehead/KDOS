@@ -3,6 +3,11 @@
 #include "disk.h"
 #include "memory.h"
 
+#define MAX_ARGS 8
+
+char* argv[MAX_ARGS];
+uint8_t argc = 0;
+
 const command shellCommands[] = {
 
     {"exit", &exit},
@@ -149,7 +154,44 @@ void dir() {
 
 }
 
-void executeCommand(const char* userInput) {
+void cd() {
+
+
+
+}
+
+void executeCommand(char* userInput) {
+
+    for (int i = 0; i < MAX_ARGS; i++)
+        argv[i] = 0;
+    argc = 0;
+
+    char* currentArg = userInput;
+
+    while (*currentArg != '\0') {
+
+        while (*currentArg == ' ')
+            currentArg++;
+
+        if (*currentArg == '\0')
+            break;
+        
+        if (argc >= MAX_ARGS)
+            break;
+
+        argv[argc++] = currentArg;
+        
+        while (*currentArg != ' ' && *currentArg != '\0')
+            currentArg++;
+
+        if (*currentArg == ' ') {
+         
+            *currentArg = '\0';
+            currentArg++;
+
+        }
+
+    }
 
     for (int i = 0; i < COMMAND_COUNT; i++) {
 

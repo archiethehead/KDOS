@@ -7,15 +7,9 @@
 #define MAX_NESTED_DIRECTORY 16
 
 uint8_t sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
-diskAddressPacket kernelSectorBufferInformation;
-
-uint8_t hardDriveCount;
-uint8_t floppyDriveCount;
-uint8_t directoryBufferIndex = 0;
-uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
-bool isDirectoryChanged = false;
-char directoryPath[MAX_NESTED_DIRECTORY][8];
 directory currentDirectory;
+diskAddressPacket kernelSectorBufferInformation;
+driveSymbol currentDrive;
 
 driveSymbol driveSymbols[] = {
 
@@ -36,6 +30,16 @@ diskAddressPacket kernelSectorBufferInformation = {
     0x00000000
 
 };
+
+
+uint8_t hardDriveCount;
+uint8_t floppyDriveCount;
+uint8_t directoryBufferIndex = 0;
+uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
+
+
+bool isDirectoryChanged = false;
+char directoryPath[MAX_NESTED_DIRECTORY][8];
 
 void readSector(uint64_t LBA) {
 
@@ -81,6 +85,9 @@ void outputFilepath() {
     if (isDirectoryChanged)
         createFilePath();
 
+    printString(currentDrive.symbol);
+    printChar('.');
+
     for (int i = 0; i < directoryBufferIndex; i++) {
 
         printString(directoryPath[(directoryBufferIndex - i) - 1]);
@@ -94,6 +101,7 @@ void outputFilepath() {
 
 void initRoot() {
 
+    currentDrive = driveSymbols[2];
     initDrives();
     readSector(ROOT_DIRECTORY_SECTOR);
     memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
@@ -168,13 +176,13 @@ void initDrives() {
 
     for (int i = 0; i < floppyDriveCount; i++) {
 
-        driveSymbols[i].numAndFlag |= true;
+        driveSymbols[i].numAndFlag |= ACTIVE_DRIVE;
 
     }
 
     for (int i = 0; i < hardDriveCount; i++) {
 
-        driveSymbols[i + 2].numAndFlag |= true;
+        driveSymbols[i + 2].numAndFlag |= ACTIVE_DRIVE;
 
     }
 
