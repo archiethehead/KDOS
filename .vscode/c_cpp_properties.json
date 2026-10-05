@@ -1,0 +1,23 @@
+{
+
+  "configurations": [{
+
+        "name": "KDOS",
+        "compilerPath": "C:/Program Files/WATCOM/binnt64/wcc.exe",
+        "intelliSenseMode": "windows-gcc-x86",
+        "includePath": ["./KDOS/kernel/include"],
+        
+        "defines": [
+                  "_DEBUG",
+                  "__MSDOS__",
+                  "__WATCOMC__=1300",
+                  "__I86__"
+              ],
+
+        "cStandard": "c99"  
+
+      }],
+
+  "version": 4
+
+}
