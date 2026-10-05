@@ -3,7 +3,7 @@
 #include "console-io.h"
 #include "bool.h"
 
-#define ROOT_DIRECTORY_SECTOR 34
+#define ROOT_DIRECTORY_SECTOR 33
 #define MAX_NESTED_DIRECTORY 16
 
 uint8_t sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
@@ -13,6 +13,7 @@ uint8_t hardDriveCount;
 uint8_t floppyDriveCount;
 uint8_t directoryBufferIndex = 0;
 uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
+bool isDirectoryChanged = false;
 char directoryPath[MAX_NESTED_DIRECTORY][8];
 directory currentDirectory;
 
@@ -52,7 +53,7 @@ void readSector(uint64_t LBA) {
 
 }
 
-void outputFilepath() {
+static void createFilePath() {
 
     char* directoryName;
     uint16_t directoryCount = 0;
@@ -69,16 +70,25 @@ void outputFilepath() {
 
     } while (!((currentDirectory.metadata = ((directory*)sectorBuffer)->metadata).parentDir) && directoryCount < MAX_NESTED_DIRECTORY);
 
-    for (int i = 0; i < directoryCount; i++) {
+    currentDirectory.metadata = metadataBuffer;
+    directoryBufferIndex = directoryCount;
+    isDirectoryChanged = false;
 
-        printString(directoryPath[(directoryCount - i) - 1]);
+}
+
+void outputFilepath() {
+
+    if (isDirectoryChanged)
+        createFilePath();
+
+    for (int i = 0; i < directoryBufferIndex; i++) {
+
+        printString(directoryPath[(directoryBufferIndex - i) - 1]);
         
-        if (directoryCount - i != 1)
+        if (directoryBufferIndex - i != 1)
             printChar('.');
 
     }
-
-    currentDirectory.metadata = metadataBuffer;
 
 }
 
@@ -88,6 +98,7 @@ void initRoot() {
     readSector(ROOT_DIRECTORY_SECTOR);
     memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
     directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
+    createFilePath();
 
 }
 

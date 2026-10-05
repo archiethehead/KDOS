@@ -27,6 +27,8 @@ void exit() {
 
 void sysinfo() {
 
+    newline();
+
     uint32_t memory = 1048576L; //1 MiB
     uint16_t oneKibBetween1and16Meg = 0;
     uint16_t sixtyFourKibBeyond16Meg = 0;
@@ -71,7 +73,7 @@ void sysinfo() {
 
 void dir() {
 
-    printString("\n\n");
+    newline();
     int len = strlen(currentDirectory.metadata.directoryName);
     int files = 0;
     int folders = 0;
