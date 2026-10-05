@@ -2,6 +2,7 @@
 #define DISK_H
 
 #include "int.h"
+#include "bool.h"
 
 #define SECTOR_BUFFER_SIZE 0x0001
 #define ACTIVE_DRIVE 4
@@ -87,6 +88,9 @@ extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory currentDirectory;
 
+uint64_t directoryExists(char* folderName);
+bool openParentDirectory();
+void changeDirectory(uint64_t LBA);
 void outputFilepath();
 void initRoot();
 void initDrives();

@@ -8,6 +8,7 @@ void executeCommand(char* userInput);
 void exit();
 void sysinfo();
 void dir();
+void cd();
 
 typedef struct {
 

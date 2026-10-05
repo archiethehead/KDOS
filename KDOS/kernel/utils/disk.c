@@ -37,9 +37,34 @@ uint8_t floppyDriveCount;
 uint8_t directoryBufferIndex = 0;
 uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
 
-
 bool isDirectoryChanged = false;
 char directoryPath[MAX_NESTED_DIRECTORY][8];
+
+uint64_t directoryExists(char* folderName) {
+
+    for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {
+
+        if (strequal(currentDirectory.entries[i].fileName, folderName))
+            return currentDirectory.entries[i].diskSector;
+
+    }
+
+    return 0;
+
+}
+
+bool openParentDirectory() {
+
+    bool isRoot = true;
+
+    if (currentDirectory.metadata.parentDir == 0)
+        return isRoot;
+    
+    changeDirectory(currentDirectory.metadata.parentDir);
+    directoryBufferIndex--;
+    return isRoot = false;
+
+}
 
 void readSector(uint64_t LBA) {
 
@@ -54,6 +79,15 @@ void readSector(uint64_t LBA) {
         int 0x13
 
     }
+
+}
+
+void changeDirectory(uint64_t LBA) {
+
+    readSector(LBA);
+    memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
+    directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
+    isDirectoryChanged = true;
 
 }
 
@@ -103,10 +137,7 @@ void initRoot() {
 
     currentDrive = driveSymbols[2];
     initDrives();
-    readSector(ROOT_DIRECTORY_SECTOR);
-    memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
-    directoryBuffer[directoryBufferIndex++] = currentDirectory.metadata.currentDir;
-    createFilePath();
+    changeDirectory(ROOT_DIRECTORY_SECTOR);
 
 }
 

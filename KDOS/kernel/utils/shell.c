@@ -13,7 +13,8 @@ const command shellCommands[] = {
     {"exit", &exit},
     {"sysinfo", &sysinfo},
     {"dir", &dir},
-    {"cls", &clrscr}
+    {"cls", &clrscr},
+    {"cd", &cd}
 
 };
 
@@ -156,7 +157,35 @@ void dir() {
 
 void cd() {
 
+    newline();
 
+    if (argc < 2) {
+
+        printString("No path was specified.\n");
+        return;
+
+    }
+
+    if (argv[1][0] == '^') {
+
+        bool isRoot = openParentDirectory();
+
+        if (isRoot)
+            printString("This folder is the root.\n");
+
+        return;
+
+    }
+
+    uint64_t LBA;
+    if (LBA = directoryExists(argv[1])) {
+
+        changeDirectory(LBA);
+        return;
+
+    }
+
+    printString("The folder/path specified does not exist.\n");
 
 }
 
