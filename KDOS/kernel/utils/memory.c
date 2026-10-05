@@ -30,7 +30,7 @@ char strequal(const char* stringOne, const char* stringTwo) {
 
 }
 
-int strcpy(char* dest, size_t destsz, char* src) {
+uint16_t strcpy(char* dest, uint16_t destsz, char* src) {
 
     if (!destsz || !(*src))
         return 0;
@@ -49,7 +49,7 @@ int strcpy(char* dest, size_t destsz, char* src) {
 
 }
 
-int chrcpy(char* dest, char c, size_t count) {
+uint16_t chrcpy(char* dest, char c, uint16_t count) {
 
     if (!count)
         return 0;
@@ -162,5 +162,25 @@ uint8_t uintToStr(uint64_t N, char* str) {
 
     uint8_t res = numToStr(N, str, false);
     return res;
+
+}
+
+uint16_t memcopy(void* dest, uint16_t destsz, uint16_t count, void* src) {
+
+    char* destBytes = (char*)dest;
+    char* srcBytes = (char*)src;
+
+    uint16_t memcopied = 0;
+
+    while (memcopied < destsz && memcopied < count) {
+
+        *destBytes = *srcBytes;
+        destBytes++;
+        srcBytes++;
+        memcopied++;
+
+    }
+
+    return memcopied;
 
 }

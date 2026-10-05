@@ -208,9 +208,9 @@ int main() {
 	fwrite(FreeSpace, Megabyte, 1, Fileptr);
 	fwrite(&FilesystemHeader, sizeof(FilesystemHeader), 1, Fileptr);
 
-	addFolder(33, "binary");
-	addFolder(33, "user");
-	addFolder(33, "sys");
+	addFolder(33, "bin");
+	addFolder(34, "user");
+	addFolder(34, "sys");
 
 	return EXIT_SUCCESS;	
 

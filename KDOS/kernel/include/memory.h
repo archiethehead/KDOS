@@ -5,9 +5,10 @@
 
 int strlen(const char* string);
 char strequal(const char* stringOne, const char* stringTwo);
-int strcpy(char* dest, size_t destsz, char* src);
-int chrcpy(char* dest, char c, size_t count);
+uint16_t strcpy(char* dest, uint16_t destsz, char* src);
+uint16_t chrcpy(char* dest, char c, uint16_t count);
 uint8_t intToStr(int64_t N, char *str);
 uint8_t uintToStr(uint64_t N, char* str);
+uint16_t memcopy(void* dest, uint16_t destsz, uint16_t count, void* src);
 
 #endif // ifndef MEMORY_H
