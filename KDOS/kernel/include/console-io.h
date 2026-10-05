@@ -4,6 +4,7 @@
 #define FORMOUT_BUFFER_SIZE 512
 
 #include "int.h"
+#include "math.h"
 
 void clrscr();
 
@@ -35,5 +36,8 @@ inline void newline() {
 }
 
 char blockingInput();
+
+vector2 getCursorPos();
+void setCursorPos(vector2 newPosition);
 
 #endif // ifdef CONSOLE_IO_H

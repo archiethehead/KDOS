@@ -31,7 +31,6 @@ diskAddressPacket kernelSectorBufferInformation = {
 
 };
 
-
 uint8_t hardDriveCount;
 uint8_t floppyDriveCount;
 uint8_t directoryBufferIndex = 0;

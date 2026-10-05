@@ -1,6 +1,7 @@
 #include "console-io.h"
 #include "shell.h"
 #include "disk.h"
+#include "math.h"
 
 #define USER_INPUT_BUFFER_SIZE 64
 
@@ -39,13 +40,25 @@ void kernelMain(void) {
             outputFilepath();
             printString(": ");
             break;
+        
+        case (0x08):
+        
+            if (userInputBufferIndex == 0)
+                continue;
+
+            vector2 cursorPosition = getCursorPos();
+            cursorPosition.x--;
+            setCursorPos(cursorPosition);
+            userInputBuffer[--userInputBufferIndex] = ' ';
+            printChar(' ');
+            setCursorPos(cursorPosition);
+
 
         default:
 
             if (userInputBufferIndex < USER_INPUT_BUFFER_SIZE && userInput > 31 && userInput < 128) {
 
-                userInputBuffer[userInputBufferIndex] = userInput;
-                userInputBufferIndex++;
+                userInputBuffer[userInputBufferIndex++] = userInput;
                 printChar(userInput);
 
             }

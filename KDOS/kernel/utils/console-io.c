@@ -82,3 +82,43 @@ void printUint(uint64_t N) {
     printString(numbuff);
 
 }
+
+vector2 getCursorPos() {
+
+    uint8_t cursorPosX = 0;
+    uint8_t cursorPosY = 0;
+
+    __asm {
+
+        mov ah, 0x03
+        int 0x10
+
+        mov cursorPosX, dl
+        mov cursorPosY, dh
+
+    }
+
+    vector2 cursorPosition;
+    cursorPosition.x = cursorPosX;
+    cursorPosition.y = cursorPosY;
+
+    return cursorPosition;
+
+}
+
+void setCursorPos(vector2 newPosition) {
+
+    uint8_t x = newPosition.x;
+    uint8_t y = newPosition.y;
+
+    __asm {
+
+        mov ah, 0x02
+        mov bh, 0x00
+        mov dl, x
+        mov dh, y
+        int 0x10
+
+    }
+
+}
