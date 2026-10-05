@@ -66,7 +66,7 @@ bool openParentDirectory() {
 
 }
 
-void readSector(uint64_t LBA) {
+static void readSector(uint64_t LBA) {
 
     uint16_t kernelSectorBufferInformationAddress = (uint16_t)&kernelSectorBufferInformation;
     kernelSectorBufferInformation.logicalBaseAddress = LBA;
@@ -97,16 +97,19 @@ static void createFilePath() {
     uint16_t directoryCount = 0;
     directoryMetadata metadataBuffer = currentDirectory.metadata;
 
-    do {
+    while (directoryCount < MAX_NESTED_DIRECTORY) {
 
         directoryName = currentDirectory.metadata.directoryName;
-
         strcpy(directoryPath[directoryCount], (sizeof(directoryPath)  / MAX_NESTED_DIRECTORY), directoryName);
-
-        readSector(currentDirectory.metadata.parentDir);
         directoryCount++;
 
-    } while (!((currentDirectory.metadata = ((directory*)sectorBuffer)->metadata).parentDir) && directoryCount < MAX_NESTED_DIRECTORY);
+        if (!currentDirectory.metadata.parentDir)
+            break;
+        
+        readSector(currentDirectory.metadata.parentDir);
+        currentDirectory.metadata = ((directory*)sectorBuffer)->metadata;
+
+    }
 
     currentDirectory.metadata = metadataBuffer;
     directoryBufferIndex = directoryCount;
