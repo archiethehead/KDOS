@@ -9,8 +9,7 @@ extern int KERNEL_ADDRESS;
 int userInputBufferIndex = 0;
 char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 
-// This function will sit at the absolute top of the binary
-void kernelMain(void) {
+void kernelMain() {
 
     clrscr();
     printString("Welcome to KDOS !\n\n"); 

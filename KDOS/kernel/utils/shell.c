@@ -85,7 +85,7 @@ void dir() {
     int len = strlen(currentDirectory.metadata.directoryName);
     int files = 0;
     int folders = 0;
-    int executables = 0;
+    int programs = 0;
 
     line[len] = '\0';
     
@@ -127,7 +127,7 @@ void dir() {
             break;
 
         case (executable):
-            executables++;
+            programs++;
             break;
 
         }
@@ -145,7 +145,7 @@ void dir() {
     printUint(folders);
     printString(" Folder(s)\n");
     
-    printUint(executables);
+    printUint(programs);
     printString(" Executable(s)\n");
 
 }
@@ -172,8 +172,8 @@ void cd() {
 
     }
 
-    uint64_t LBA;
-    if (LBA = directoryExists(argv[1])) {
+    uint64_t LBA = directoryExists(argv[1]);
+    if (LBA) {
 
         changeDirectory(LBA);
         return;
