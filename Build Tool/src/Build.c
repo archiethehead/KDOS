@@ -127,6 +127,7 @@ void addFile(uint32_t parent, const char* filepath, const char* name) {
 		fileChunks[i].header.tag.sizeAndFlags = 0 << 31;
 		fileChunks[i].header.tag.sizeAndFlags |= 1;
 		fileChunks[i].header.fileSize = (uint32_t)fileSize;
+		fileChunks[i].footer.tag = fileChunks[i].header.tag;
 		fread_s(fileChunks[i].data, sizeof(fileChunks[i].data), 1, sizeof(fileChunks[i].data), fileptr);
 
 	}
@@ -138,10 +139,14 @@ void addFile(uint32_t parent, const char* filepath, const char* name) {
 		exit(EXIT_FAILURE);
 
 	uint32_t freeSectorLBA = findFreeSector();
-	uint32_t fileRootLBA = freeSectorLBA;
+	uint32_t* nextFileSectorBuffer = (uint32_t*)malloc(chunksRequired * sizeof(uint32_t));
+
+	if (!nextFileSectorBuffer)
+		exit(EXIT_FAILURE);
 
 	for (int i = 0; i < chunksRequired; i++) {
 
+		nextFileSectorBuffer[i] = freeSectorLBA;
 		uint32_t sectorSize = 0;
 
 		fseek(fileptr, freeSectorLBA * 512, SEEK_SET);
@@ -165,10 +170,22 @@ void addFile(uint32_t parent, const char* filepath, const char* name) {
 
 	}
 
+	for (int i = 0; i < chunksRequired - 1; i++) {
+	
+		fileChunks[i].footer.nextSectorLBA = nextFileSectorBuffer[i + 1];
+		fseek(fileptr, nextFileSectorBuffer[i] * 512, SEEK_SET);
+		fwrite(&fileChunks[i], sizeof(fileChunks[i]), 1, fileptr);
+
+	}
+
+	fileChunks[chunksRequired - 1].footer.nextSectorLBA = 0;
+	fseek(fileptr, nextFileSectorBuffer[chunksRequired - 1] * 512, SEEK_SET);
+	fwrite(&fileChunks[chunksRequired - 1], sizeof(fileChunks[chunksRequired - 1]), 1, fileptr);
+
 	Directory buffer;
 	DirectoryEntry newFile;
 
-	newFile.diskSector = fileRootLBA;
+	newFile.diskSector = nextFileSectorBuffer[0];
 	strcpy_s(newFile.fileName, sizeof(newFile.fileName), name);
 	newFile.fileSizeAndFlags = 0 << 30;
 	newFile.fileSizeAndFlags |= fileSize;
