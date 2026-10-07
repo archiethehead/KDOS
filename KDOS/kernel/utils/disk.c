@@ -41,9 +41,9 @@ char directoryPath[MAX_NESTED_DIRECTORY][8];
 
 uint64_t directoryExists(char* folderName) {
 
-    for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {
+    for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {     
 
-        if (strequal(currentDirectory.entries[i].fileName, folderName) && currentDirectory.entries[i].fileSizeAndFlags >> 30 == 1)
+        if (strequal(currentDirectory.entries[i].fileName, folderName) && FILE_TYPE(currentDirectory.entries[i]) == folder)
                 return currentDirectory.entries[i].diskSector;
 
     }

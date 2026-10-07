@@ -7,6 +7,9 @@
 #define SECTOR_BUFFER_SIZE 0x0001
 #define ACTIVE_DRIVE 4
 
+// Should ONLY take directoryEntry object as input
+#define FILE_TYPE(x) (x.fileSizeAndFlags >> 30)
+
 typedef enum {	
 
 	file 		= 0,

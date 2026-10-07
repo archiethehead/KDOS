@@ -102,7 +102,7 @@ void dir() {
     newline();
 
     char fileCount = currentDirectory.metadata.fileCount;
-    for (unsigned short i = 0; i < fileCount; i++) {
+    for (uint16_t i = 0; i < fileCount; i++) {
 
         char* gap = "          ";
         int len =  strlen(currentDirectory.entries[i].fileName);
@@ -110,9 +110,9 @@ void dir() {
         gap[len] = '\0';
         printString(currentDirectory.entries[i].fileName);
 
-        char flag = currentDirectory.entries[i].fileSizeAndFlags >> 30;
+        fileType flag = FILE_TYPE(currentDirectory.entries[i]);
 
-        switch ((fileType)flag) {
+        switch (flag) {
 
         case (file):
 
