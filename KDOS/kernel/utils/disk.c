@@ -43,8 +43,8 @@ uint64_t directoryExists(char* folderName) {
 
     for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {
 
-        if (strequal(currentDirectory.entries[i].fileName, folderName))
-            return currentDirectory.entries[i].diskSector;
+        if (strequal(currentDirectory.entries[i].fileName, folderName) && currentDirectory.entries[i].fileSizeAndFlags >> 30 == 1)
+                return currentDirectory.entries[i].diskSector;
 
     }
 

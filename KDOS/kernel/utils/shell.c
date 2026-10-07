@@ -107,7 +107,7 @@ void dir() {
         char* gap = "          ";
         int len =  strlen(currentDirectory.entries[i].fileName);
         len = 10 - len;
-        *(gap + len) = '\0';
+        gap[len] = '\0';
         printString(currentDirectory.entries[i].fileName);
 
         char flag = currentDirectory.entries[i].fileSizeAndFlags >> 30;
@@ -115,6 +115,9 @@ void dir() {
         switch ((fileType)flag) {
 
         case (file):
+
+            printString(gap);
+            printString("<FILE>");
             files++;
             break;
 
@@ -127,12 +130,13 @@ void dir() {
             break;
 
         case (executable):
+
             programs++;
             break;
 
         }
 
-        *(gap + len) = ' ';
+        gap[len] = ' ';
         newline();
 
     }
