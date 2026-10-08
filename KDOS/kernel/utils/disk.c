@@ -39,33 +39,7 @@ uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
 bool isDirectoryChanged = false;
 char directoryPath[MAX_NESTED_DIRECTORY][8];
 
-uint64_t directoryExists(char* folderName) {
-
-    for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {     
-
-        if (strequal(currentDirectory.entries[i].fileName, folderName) && FILE_TYPE(currentDirectory.entries[i]) == folder)
-                return currentDirectory.entries[i].diskSector;
-
-    }
-
-    return 0;
-
-}
-
-bool openParentDirectory() {
-
-    bool isRoot = true;
-
-    if (currentDirectory.metadata.parentDir == 0)
-        return isRoot;
-    
-    changeDirectory(currentDirectory.metadata.parentDir);
-    directoryBufferIndex--;
-    return isRoot = false;
-
-}
-
-static void readSector(uint64_t LBA) {
+void readSector(uint64_t LBA) {
 
     uint16_t kernelSectorBufferInformationAddress = (uint16_t)&kernelSectorBufferInformation;
     kernelSectorBufferInformation.logicalBaseAddress = LBA;
@@ -81,7 +55,7 @@ static void readSector(uint64_t LBA) {
 
 }
 
-void changeDirectory(uint64_t LBA) {
+void loadDirectory(uint64_t LBA) {
 
     readSector(LBA);
     memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
@@ -139,7 +113,7 @@ void initRoot() {
 
     currentDrive = driveSymbols[2];
     initDrives();
-    changeDirectory(ROOT_DIRECTORY_SECTOR);
+    loadDirectory(ROOT_DIRECTORY_SECTOR);
 
 }
 
@@ -220,3 +194,33 @@ void initDrives() {
     }
 
 }
+
+bool openDirectory(char* folderName) {
+
+    for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {     
+
+        if (strequal(currentDirectory.entries[i].fileName, folderName) && FILE_TYPE(currentDirectory.entries[i]) == folder) {
+                loadDirectory(currentDirectory.entries[i].diskSector);
+                return true;
+
+        }
+
+    }
+
+    return false;
+
+}
+
+bool openParentDirectory() {
+
+    bool isRoot = true;
+
+    if (currentDirectory.metadata.parentDir == 0)
+        return isRoot;
+    
+    loadDirectory(currentDirectory.metadata.parentDir);
+    directoryBufferIndex--;
+    return isRoot = false;
+
+}
+

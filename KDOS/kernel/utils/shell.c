@@ -167,22 +167,15 @@ void cd() {
 
     if (argv[1][0] == '^') {
 
-        bool isRoot = openParentDirectory();
-
-        if (isRoot)
+        if (openParentDirectory())
             printString("This folder is the root.\n");
 
         return;
 
     }
 
-    uint64_t LBA = directoryExists(argv[1]);
-    if (LBA) {
-
-        changeDirectory(LBA);
+    if (openDirectory(argv[1]))
         return;
-
-    }
 
     printString("The folder/path specified does not exist.\n");
 

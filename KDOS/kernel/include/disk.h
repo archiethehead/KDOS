@@ -91,9 +91,8 @@ extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory currentDirectory;
 
-uint64_t directoryExists(char* folderName);
 bool openParentDirectory();
-void changeDirectory(uint64_t LBA);
+bool openDirectory(char* folderName);
 void outputFilepath();
 void initRoot();
 void initDrives();
