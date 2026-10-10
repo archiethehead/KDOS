@@ -43,8 +43,8 @@ if not exist build\ (
 nasm -f bin ./KDOS/boot.asm -o ./build/boot.bin || goto :exit
 nasm -f obj ./KDOS/kernel/kernel-entry.asm -o ./build/kernel-entry.obj || goto :exit
 set INCLUDE=./KDOS/kernel/include
-wcl -q -za99 -c -0 -d0 -ms -s -wx -zl ./KDOS/kernel/utils/video.c ./KDOS/kernel/utils/console-io.c ./KDOS/kernel/utils/disk.c ./KDOS/kernel/utils/memory.c ./KDOS/kernel/utils/shell.c ./KDOS/kernel/kernel.c -fo=./build/|| goto :exit
-wlink DISABLE 1014 OPTION QUIET FILE ./build/kernel-entry.obj,./build/video.obj,./build/disk.obj,./build/memory.obj,./build/console-io.obj,./build/shell.obj,./build/kernel.obj library 'C:\Program Files\WATCOM\lib286\dos\clibs.lib' FORMAT RAW BIN NAME ./build/kernel.bin OPTION NODEFAULTLIBS, START=_cstart_ || goto :exit
+wcl -q -za99 -c -0 -d0 -ms -s -wx -zl ./KDOS/kernel/utils/time.c ./KDOS/kernel/utils/video.c ./KDOS/kernel/utils/console-io.c ./KDOS/kernel/utils/disk.c ./KDOS/kernel/utils/memory.c ./KDOS/kernel/utils/shell.c ./KDOS/kernel/kernel.c -fo=./build/|| goto :exit
+wlink DISABLE 1014 OPTION QUIET FILE ./build/kernel-entry.obj,./build/time.obj,./build/video.obj,./build/disk.obj,./build/memory.obj,./build/console-io.obj,./build/shell.obj,./build/kernel.obj library 'C:\Program Files\WATCOM\lib286\dos\clibs.lib' FORMAT RAW BIN NAME ./build/kernel.bin OPTION NODEFAULTLIBS, START=_cstart_ || goto :exit
 "Build Tool" || goto :exit
 
 if "%NORUN%"=="false" (

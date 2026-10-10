@@ -20,6 +20,9 @@ void setVideoMode(videoMode mode) {
 
 bool drawXBM(uint16_t width, uint16_t height, uint8_t* imageData) {
 
+    uint16_t widthOffset = (320 - width) / 2;
+    uint16_t heightOffset = (200 - height) / 2;
+
     if (currentVideoMode != VGA)
         return false;
 
@@ -34,7 +37,7 @@ bool drawXBM(uint16_t width, uint16_t height, uint8_t* imageData) {
                 byte = imageData[pixelIndex / 8];
             
             bool isBlack = EXTRACT_BIT(byte, pixelIndex % 8);
-            uint16_t offset = (y * 320) + x;
+            uint16_t offset = ((y + heightOffset) * 320) + (x + widthOffset);
             VGAMemory[offset] = isBlack ? 0 : 15;
             pixelIndex++;
 

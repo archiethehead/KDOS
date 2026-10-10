@@ -4,6 +4,7 @@
 #include "disk.h"
 #include "math.h"
 #include "video.h"
+#include "time.h"
 #include "logo.h"
 
 #define USER_INPUT_BUFFER_SIZE 64
@@ -24,12 +25,12 @@ void kernelMain() {
 
     setVideoMode(VGA);
     drawXBM(KDOS_width, KDOS_height, KDOS_bits);
+    initRoot();
+    wait(1);
 
-    blockingInput();
-
+    setVideoMode(text);
     clrscr();
     printString("Welcome to KDOS !\n\n"); 
-    initRoot();
 
     outputFilepath();
     printString(": ");
