@@ -6,12 +6,19 @@
 
 #define MAX_ARGS 8
 
+extern char version_type[];
+extern uint8_t version_major;
+extern uint8_t version_minor;
+extern uint8_t version_patch;
+extern char version_name[];
+
 char* argv[MAX_ARGS];
 uint8_t argc = 0;
 
 const command shellCommands[] = {
 
     {"help", &help, "Outputs every command and it's arguments"},
+    {"version", &version, "Outputs the KDOS version number"},
     {"exit", &exit, "Shuts down KDOS and the host machine"},
     {"reset", &reset, "Shuts down KDOS and reboots the host machine"},
     {"sysinfo", &sysinfo, "Outputs the hardware statistics of the host machine"},
@@ -42,6 +49,20 @@ void help() {
         gap[len] = ' ';
 
     }
+
+}
+
+void version() {
+
+    newline();
+    printString(version_type);
+    printString(" Version ");
+    printUint(version_major);
+    printChar('.');
+    printUint(version_minor);
+    printChar('.');
+    printUint(version_patch);
+    newline();
 
 }
 

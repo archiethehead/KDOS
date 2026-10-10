@@ -49,7 +49,7 @@ wlink DISABLE 1014 OPTION QUIET FILE ./build/kernel-entry.obj,./build/time.obj,.
 
 if "%NORUN%"=="false" (
 
-    qemu-system-x86_64 -boot c -drive file=build/KDOS.img,format=raw
+    qemu-system-x86_64 -full-screen -boot c -drive file=build/KDOS.img,format=raw
 
 )
 

@@ -6,6 +6,7 @@
 void executeCommand(char* userInput);
 
 void help();
+void version(); 
 void exit();
 void reset();
 void sysinfo();

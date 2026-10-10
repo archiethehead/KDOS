@@ -25,7 +25,7 @@ void kernelMain() {
     setVideoMode(VGA);
     drawXBM(KDOS_width, KDOS_height, KDOS_bits);
     initRoot();
-    wait(1);
+    wait(3);
 
     setVideoMode(text);
     clrscr();
