@@ -70,7 +70,7 @@ void printString(const char* string) {
 void printInt(int64_t N) {
 
     char numbuff[32];
-    intToStr((int64_t)N, numbuff);
+    intToStr(N, numbuff);
     printString(numbuff);
 
 }
@@ -78,7 +78,7 @@ void printInt(int64_t N) {
 void printUint(uint64_t N) {
 
     char numbuff[32];
-    uintToStr((uint64_t)N, numbuff);
+    uintToStr(N, numbuff);
     printString(numbuff);
 
 }

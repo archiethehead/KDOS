@@ -1,7 +1,10 @@
 #include "console-io.h"
+#include "bool.h"
 #include "shell.h"
 #include "disk.h"
 #include "math.h"
+#include "video.h"
+#include "logo.h"
 
 #define USER_INPUT_BUFFER_SIZE 64
 
@@ -10,6 +13,19 @@ int userInputBufferIndex = 0;
 char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 
 void kernelMain() {
+
+    __asm {
+
+        mov ah, 0x00
+        mov al, 0x13
+        int 0x10
+
+    }
+
+    setVideoMode(VGA);
+    drawXBM(KDOS_width, KDOS_height, KDOS_bits);
+
+    blockingInput();
 
     clrscr();
     printString("Welcome to KDOS !\n\n"); 
@@ -51,6 +67,7 @@ void kernelMain() {
             userInputBuffer[--userInputBufferIndex] = ' ';
             printChar(' ');
             setCursorPos(cursorPosition);
+            break;
 
 
         default:
