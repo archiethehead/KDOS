@@ -5,15 +5,18 @@
 
 void executeCommand(char* userInput);
 
+void help();
 void exit();
+void reset();
 void sysinfo();
 void dir();
 void cd();
 
 typedef struct {
 
-    char name[10];
+    char* name;
     void (*functionPointer)(void);
+    char* description;
 
 } command;
 

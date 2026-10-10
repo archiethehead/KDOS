@@ -10,13 +10,38 @@ uint8_t argc = 0;
 
 const command shellCommands[] = {
 
-    {"exit", &exit},
-    {"sysinfo", &sysinfo},
-    {"dir", &dir},
-    {"cls", &clrscr},
-    {"cd", &cd}
+    {"help", &help, "Outputs every command and it's arguments"},
+    {"exit", &exit, "Shuts down KDOS and the host machine"},
+    {"reset", &reset, "Shuts down KDOS and reboots the host machine"},
+    {"sysinfo", &sysinfo, "Outputs the hardware statistics of the host machine"},
+    {"dir", &dir, "Outputs the contents of the current directory"},
+    {"cd", &cd, "<directory name> Changes the current directory (^ = parent directory)"},
+    {"cls", &clrscr, "Clears the screen of all text"}
 
 };
+
+void help() {
+
+    printString("\nCOMMANDS\n\n<> - Mandatory Argument(s)\n[] - Optional Argument(s)\n"
+                "Arguments specified with a '-' flag aren't order sensitive\n"
+                "View verbose output with the '-v' flag (where applicable)\n\n");
+    
+    char* gap = "          ";
+    for (int i = 0; i < COMMAND_COUNT; i++) {
+
+        uint16_t len = 8 - strlen(shellCommands[i].name);
+        gap[len] = '\0';
+
+        printString(shellCommands[i].name);
+        printString(gap);
+        printString(shellCommands[i].description);
+        newline();
+
+        gap[len] = ' ';
+
+    }
+
+}
 
 void exit() {
 
@@ -26,6 +51,18 @@ void exit() {
         mov bx, 0x0001
         mov cx, 0x0003
         int 0x15
+
+    }
+
+}
+
+void reset() {
+
+    clrscr();
+
+    __asm {
+
+        int 0x19
 
     }
 

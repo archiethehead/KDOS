@@ -9,7 +9,6 @@
 
 #define USER_INPUT_BUFFER_SIZE 64
 
-extern int KERNEL_ADDRESS;
 int userInputBufferIndex = 0;
 char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 
