@@ -4,6 +4,7 @@
 #include "int.h"
 
 #define SOA(x, y) (uint8_t far *)(((uint32_t)x << 16) | y)
+#define EXTRACT_BIT(x, y) ((x & (1 << y)) >> y);
 
 typedef struct {
 

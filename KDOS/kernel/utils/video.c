@@ -33,7 +33,7 @@ bool drawXBM(uint16_t width, uint16_t height, uint8_t* imageData) {
             if (pixelIndex % 8 == 0)
                 byte = imageData[pixelIndex / 8];
             
-            bool isBlack = ((byte & (1 << (pixelIndex % 8))) >> (pixelIndex % 8));
+            bool isBlack = EXTRACT_BIT(byte, pixelIndex % 8);
             uint16_t offset = (y * 320) + x;
             VGAMemory[offset] = isBlack ? 0 : 15;
             pixelIndex++;
