@@ -5,6 +5,7 @@
 
 #include "int.h"
 #include "math.h"
+#include "time.h"
 
 void clrscr();
 
@@ -12,6 +13,8 @@ void printString(const char* string);
 
 void printInt(int64_t N);
 void printUint(uint64_t N);
+
+void printTime(uint32_t systemTicks);
 
 inline void printChar(char c) {
 

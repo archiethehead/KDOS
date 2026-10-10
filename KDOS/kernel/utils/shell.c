@@ -2,6 +2,7 @@
 #include "shell.h"
 #include "disk.h"
 #include "memory.h"
+#include "time.h"
 
 #define MAX_ARGS 8
 
@@ -16,7 +17,8 @@ const command shellCommands[] = {
     {"sysinfo", &sysinfo, "Outputs the hardware statistics of the host machine"},
     {"dir", &dir, "Outputs the contents of the current directory"},
     {"cd", &cd, "<directory name> Changes the current directory (^ = parent directory)"},
-    {"cls", &clrscr, "Clears the screen of all text"}
+    {"cls", &clrscr, "Clears the screen of all text"},
+    {"time", &time, "Outputs the current time"}
 
 };
 
@@ -215,6 +217,14 @@ void cd() {
         return;
 
     printString("The folder/path specified does not exist.\n");
+
+}
+
+void time() {
+
+    newline();
+    printTime(getTime());
+    newline();
 
 }
 

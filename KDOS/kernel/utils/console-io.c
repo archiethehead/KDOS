@@ -81,6 +81,33 @@ void printUint(uint64_t N) {
     uintToStr(N, numbuff);
     printString(numbuff);
 
+    
+}
+
+void printTime(uint32_t systemTicks) {
+
+    uint32_t totalSeconds = ((systemTicks * 10) / 182);
+    uint32_t seconds = totalSeconds % 60;
+
+    uint32_t totalMinutes = totalSeconds / 60;
+    uint32_t minutes = totalMinutes % 60;
+
+    uint32_t hours = totalMinutes / 60;
+
+    if (hours < 10)
+        printChar('0');
+    printUint(hours);
+    printChar(':');
+
+    if (minutes < 10)
+        printChar('0');
+    printUint(minutes);
+    printChar(':');
+
+    if (seconds < 10)
+        printChar('0');
+    printUint(seconds);
+
 }
 
 vector2 getCursorPos() {

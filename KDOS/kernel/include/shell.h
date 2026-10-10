@@ -11,6 +11,7 @@ void reset();
 void sysinfo();
 void dir();
 void cd();
+void time();
 
 typedef struct {
 
