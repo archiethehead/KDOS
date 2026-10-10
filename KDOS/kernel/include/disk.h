@@ -42,6 +42,28 @@ typedef struct {
 } fileTag;
 
 typedef struct {
+
+	uint32_t nextSectorLBA;
+	fileTag tag;
+
+} fileFooter;
+
+typedef struct {
+
+	fileTag tag;
+	uint32_t fileSize;
+
+} fileHeader;
+
+typedef struct {
+
+	fileHeader header;
+	uint8_t data[512 - (sizeof(fileHeader) + sizeof(fileFooter))];
+	fileFooter footer;
+
+} fileChunk;
+
+typedef struct {
 	
 	char directoryName[8];
 	uint16_t fileCount;
@@ -91,6 +113,7 @@ extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory currentDirectory;
 
+void loadFile(uint32_t LBA);
 bool openParentDirectory();
 bool openDirectory(char* folderName);
 void outputFilepath();

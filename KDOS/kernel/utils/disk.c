@@ -6,6 +6,7 @@
 #define ROOT_DIRECTORY_SECTOR 33
 #define MAX_NESTED_DIRECTORY 16
 
+uint8_t huge *fileMemory = SOA(0x2000, 0x0000);
 uint8_t sectorBuffer[512 * SECTOR_BUFFER_SIZE] = { 0 };
 directory currentDirectory;
 diskAddressPacket kernelSectorBufferInformation;
@@ -52,6 +53,29 @@ void readSector(uint64_t LBA) {
         int 0x13
 
     }
+
+}
+
+void loadFile(uint32_t LBA) {
+
+    readSector(LBA);
+    uint8_t huge *fileMemoryMutable = fileMemory;
+    fileChunk* chunk = (fileChunk*)&sectorBuffer;
+    uint32_t nextSector = chunk->footer.nextSectorLBA;
+    farmemcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
+    fileMemoryMutable += sizeof(chunk->data);
+
+    while (nextSector != 0) {
+
+        readSector(nextSector);
+        chunk = (fileChunk*)&sectorBuffer;
+        nextSector = chunk->footer.nextSectorLBA;
+        farmemcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
+        fileMemoryMutable += sizeof(chunk->data);
+
+    }
+
+    printHugeString(fileMemory);
 
 }
 

@@ -67,6 +67,20 @@ void printString(const char* string) {
 
 }
 
+void printHugeString(const char huge* string) {
+
+    while (*string != '\0') {
+
+        if (*string == '\n')
+            printChar('\r');
+
+        printChar(*string);
+        string++;
+
+    }
+
+}
+
 void printInt(int64_t N) {
 
     char numbuff[32];

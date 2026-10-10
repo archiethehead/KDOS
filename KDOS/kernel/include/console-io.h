@@ -10,6 +10,7 @@
 void clrscr();
 
 void printString(const char* string);
+void printHugeString(const char huge* string);
 
 void printInt(int64_t N);
 void printUint(uint64_t N);

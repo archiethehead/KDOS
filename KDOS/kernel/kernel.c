@@ -29,6 +29,7 @@ void kernelMain() {
 
     setVideoMode(text);
     clrscr();
+    loadFile(37);
     printString("Welcome to KDOS !\n\n"); 
 
     outputFilepath();

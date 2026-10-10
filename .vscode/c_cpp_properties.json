@@ -12,7 +12,8 @@
                 "__MSDOS__",
                 "__WATCOMC__=1300",
                 "__I86__",
-                "far="
+                "far=",
+                "huge="
             ],
             "cStandard": "c99"
         }

@@ -184,3 +184,23 @@ uint16_t memcopy(void* dest, uint16_t destsz, uint16_t count, void* src) {
     return memcopied;
 
 }
+
+uint16_t farmemcpy(void huge* dest, uint16_t destsz, uint16_t count, void* src) {
+
+    char huge* destBytes = (char huge*)dest;
+    char* srcBytes = (char*)src;
+
+    uint16_t memcopied = 0;
+
+    while (memcopied < destsz && memcopied < count) {
+
+        *destBytes = *srcBytes;
+        destBytes++;
+        srcBytes++;
+        memcopied++;
+
+    }
+
+    return memcopied; 
+    
+}
