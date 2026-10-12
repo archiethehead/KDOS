@@ -25,7 +25,8 @@ const command shellCommands[] = {
     {"dir", &dir, "Outputs the contents of the current directory"},
     {"cd", &cd, "<directory name> Changes the current directory (^ = parent directory)"},
     {"cls", &clrscr, "Clears the screen of all text"},
-    {"time", &time, "Outputs the current time"}
+    {"time", &time, "Outputs the current time"},
+    {"type", &type, "Outputs the text contents of a file"}
 
 };
 
@@ -246,6 +247,53 @@ void time() {
     newline();
     printTime(getTime());
     newline();
+
+}
+
+void type() {
+
+    newline();
+
+    if (argc < 2) {
+
+        printString("No file was specified.\n");
+        return;
+
+    }
+
+    if (openFile(argv[1], file)) {
+        
+        uint8_t huge* mutableMemory = fileMemory;
+        uint32_t count = 0;
+
+        while (*mutableMemory != '\0') {
+
+            if (*mutableMemory == '\n')
+                printChar('\r');
+
+            printChar(*mutableMemory);
+            count++;
+
+            if (count == 80 || *mutableMemory == '\n') {
+
+                count = 0;
+                
+                char input = blockingInput();
+
+                if (input == 'q')
+                    return;
+
+            }
+
+            mutableMemory++;
+
+        }
+
+        return;
+
+    }
+
+    printString("The file specified does not exist.\n");
 
 }
 

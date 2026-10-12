@@ -62,7 +62,7 @@ void loadFile(uint32_t LBA) {
     uint8_t huge *fileMemoryMutable = fileMemory;
     fileChunk* chunk = (fileChunk*)&sectorBuffer;
     uint32_t nextSector = chunk->footer.nextSectorLBA;
-    farmemcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
+    hugememcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
     fileMemoryMutable += sizeof(chunk->data);
 
     while (nextSector != 0) {
@@ -70,12 +70,10 @@ void loadFile(uint32_t LBA) {
         readSector(nextSector);
         chunk = (fileChunk*)&sectorBuffer;
         nextSector = chunk->footer.nextSectorLBA;
-        farmemcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
+        hugememcpy(fileMemoryMutable, sizeof(chunk->data), sizeof(chunk->data), chunk->data);
         fileMemoryMutable += sizeof(chunk->data);
 
     }
-
-    printHugeString(fileMemory);
 
 }
 

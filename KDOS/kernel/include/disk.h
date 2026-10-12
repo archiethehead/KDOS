@@ -3,6 +3,7 @@
 
 #include "int.h"
 #include "bool.h"
+#include "math.h"
 
 #define SECTOR_BUFFER_SIZE 0x0001
 #define ACTIVE_DRIVE 4
@@ -107,6 +108,7 @@ typedef struct {
 
 } driveSymbol;
 
+extern uint8_t huge *fileMemory;
 extern uint8_t hardDriveCount;
 extern uint8_t floppyDriveCount;
 extern char filePathBuffer[];

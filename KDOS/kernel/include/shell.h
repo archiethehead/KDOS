@@ -13,6 +13,7 @@ void sysinfo();
 void dir();
 void cd();
 void time();
+void type();
 
 typedef struct {
 
