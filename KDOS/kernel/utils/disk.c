@@ -40,10 +40,10 @@ uint32_t directoryBuffer[MAX_NESTED_DIRECTORY];
 bool isDirectoryChanged = false;
 char directoryPath[MAX_NESTED_DIRECTORY][8];
 
-void readSector(uint64_t LBA) {
+void readSector(uint32_t LBA) {
 
     uint16_t kernelSectorBufferInformationAddress = (uint16_t)&kernelSectorBufferInformation;
-    kernelSectorBufferInformation.logicalBaseAddress = LBA;
+    kernelSectorBufferInformation.logicalBaseAddress = (uint64_t)LBA;
     
     __asm {
 
@@ -79,7 +79,7 @@ void loadFile(uint32_t LBA) {
 
 }
 
-void loadDirectory(uint64_t LBA) {
+void loadDirectory(uint32_t LBA) {
 
     readSector(LBA);
     memcopy(&currentDirectory, sizeof(currentDirectory), sizeof(sectorBuffer), &sectorBuffer);
@@ -219,12 +219,24 @@ void initDrives() {
 
 }
 
-bool openDirectory(char* folderName) {
+bool openFile(char* fileName, fileType type) {
 
     for (uint16_t i =  0; i < currentDirectory.metadata.fileCount; i++) {     
 
-        if (strequal(currentDirectory.entries[i].fileName, folderName) && FILE_TYPE(currentDirectory.entries[i]) == folder) {
-                loadDirectory(currentDirectory.entries[i].diskSector);
+        if (strequal(currentDirectory.entries[i].fileName, fileName) && FILE_TYPE(currentDirectory.entries[i]) == type) {
+                
+                switch (type) {
+
+                    case (file):
+                        loadFile(currentDirectory.entries[i].diskSector);
+                        break;
+                    
+                    case (folder):
+                        loadDirectory(currentDirectory.entries[i].diskSector);
+                        break;
+
+                }
+            
                 return true;
 
         }

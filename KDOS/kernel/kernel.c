@@ -14,22 +14,13 @@ char userInputBuffer[USER_INPUT_BUFFER_SIZE];
 
 void kernelMain() {
 
-    __asm {
-
-        mov ah, 0x00
-        mov al, 0x13
-        int 0x10
-
-    }
-
     setVideoMode(VGA);
     drawXBM(KDOS_width, KDOS_height, KDOS_bits);
     initRoot();
-    wait(3);
+    wait(1);
 
     setVideoMode(text);
     clrscr();
-    loadFile(37);
     printString("Welcome to KDOS !\n\n"); 
 
     outputFilepath();

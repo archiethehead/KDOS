@@ -113,9 +113,8 @@ extern char filePathBuffer[];
 extern diskAddressPacket kernelSectorBufferInformation;
 extern directory currentDirectory;
 
-void loadFile(uint32_t LBA);
 bool openParentDirectory();
-bool openDirectory(char* folderName);
+bool openFile(char* fileName, fileType type);
 void outputFilepath();
 void initRoot();
 void initDrives();

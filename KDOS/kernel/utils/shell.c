@@ -234,7 +234,7 @@ void cd() {
 
     }
 
-    if (openDirectory(argv[1]))
+    if (openFile(argv[1], folder))
         return;
 
     printString("The folder/path specified does not exist.\n");
