@@ -6,6 +6,7 @@
 
 uint16_t strlen(const char* string);
 bool strequal(const char* stringOne, const char* stringTwo);
+const char* strchr(const char* string, char character);
 uint16_t strcpy(char* dest, uint16_t destsz, char* src);
 uint16_t chrcpy(char* dest, char c, uint16_t count);
 uint8_t intToStr(int64_t N, char *str);

@@ -5,7 +5,8 @@
             "compilerPath": "C:/Program Files/WATCOM/binnt64/wcc.exe",
             "intelliSenseMode": "windows-gcc-x86",
             "includePath": [
-                "./KDOS/kernel/include"
+                "./KDOS/kernel/include",
+                "./KDOS/kernel/assets"
             ],
             "defines": [
                 "_DEBUG",

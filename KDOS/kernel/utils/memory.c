@@ -30,6 +30,21 @@ bool strequal(const char* stringOne, const char* stringTwo) {
 
 }
 
+const char* strchr(const char* string, char character) {
+
+    while (*string != '\0') {
+    
+        if (*string == character)
+            return string;
+
+        else
+            string++;
+    
+    }
+    
+    return nullptr;
+}
+
 uint16_t strcpy(char* dest, uint16_t destsz, char* src) {
 
     if (!destsz || !(*src))

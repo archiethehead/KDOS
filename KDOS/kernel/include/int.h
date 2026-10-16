@@ -13,6 +13,12 @@ typedef unsigned long long uint64_t;
 
 typedef unsigned long long size_t;
 
+enum {
+    
+    nullptr = 0
+
+};
+
 #define INT8_MIN (int8_t)-128
 #define INT8_MAX (int8_t)127
 #define UINT8_MAX (uint8_t)255

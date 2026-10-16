@@ -3,8 +3,9 @@
 #include "disk.h"
 #include "memory.h"
 #include "time.h"
+#include "arg.h"
 
-#define MAX_ARGS 8
+#define MAX_ARGS 16 
 
 extern char version_type[];
 extern uint8_t version_major;
@@ -14,40 +15,56 @@ extern char version_name[];
 
 char* argv[MAX_ARGS];
 uint8_t argc = 0;
+bool verbose = false;
 
 const command shellCommands[] = {
 
-    {"help", &help, "Outputs every command and it's arguments"},
-    {"version", &version, "Outputs the KDOS version number"},
-    {"exit", &exit, "Shuts down KDOS and the host machine"},
-    {"reset", &reset, "Shuts down KDOS and reboots the host machine"},
-    {"sysinfo", &sysinfo, "Outputs the hardware statistics of the host machine"},
-    {"dir", &dir, "Outputs the contents of the current directory"},
-    {"cd", &cd, "<directory name> Changes the current directory (^ = parent directory)"},
-    {"cls", &clrscr, "Clears the screen of all text"},
-    {"time", &time, "Outputs the current time"},
-    {"type", &type, "Outputs the text contents of a file"}
+    {"help",    &help,      "[command name(s)] Outputs every command and it's arguments"},
+    {"version", &version,   "Outputs the KDOS version number"},
+    {"exit",    &exit,      "Shuts down KDOS and the host machine"},
+    {"reset",   &reset,     "Shuts down KDOS and reboots the host machine"},
+    {"sysinfo", &sysinfo,   "Outputs the hardware statistics of the host machine"},
+    {"dir",     &dir,       "Outputs the contents of the current directory"},
+    {"cd",      &cd,        "<directory name> Changes the current directory (^ = parent directory)"},
+    {"cls",     &clrscr,    "Clears the screen of all text"},
+    {"time",    &time,      "Outputs the current time"},
+    {"type",    &type,      "<-f filename> Outputs the text contents of a file"}
 
 };
+
+void printFunc(command Command) {
+
+    char* gap = "          ";
+    uint16_t len = 8 - strlen(Command.name);
+    gap[len] = '\0';
+
+    printString(Command.name);
+    printString(gap);
+    printString(Command.description);
+    newline();
+
+    gap[len] = ' ';
+
+}
 
 void help() {
 
     printString("\nCOMMANDS\n\n<> - Mandatory Argument(s)\n[] - Optional Argument(s)\n"
                 "Arguments specified with a '-' flag aren't order sensitive\n"
                 "View verbose output with the '-v' flag (where applicable)\n\n");
-    
-    char* gap = "          ";
+
     for (int i = 0; i < COMMAND_COUNT; i++) {
 
-        uint16_t len = 8 - strlen(shellCommands[i].name);
-        gap[len] = '\0';
+        if (argc == 1)
+            printFunc(shellCommands[i]);
 
-        printString(shellCommands[i].name);
-        printString(gap);
-        printString(shellCommands[i].description);
-        newline();
+        else {
 
-        gap[len] = ' ';
+            for (int j = 1; j < argc; j++)
+                if (strequal(argv[j], shellCommands[i].name))
+                    printFunc(shellCommands[i]);
+
+        }
 
     }
 
@@ -252,17 +269,57 @@ void time() {
 
 void type() {
 
-    newline();
+    char* fileName = nullptr;
+    int opt = 0;
 
-    if (argc < 2) {
+    while((opt = getopt(argc - 1, argv + 1, "f:v")) != -1) {
+
+        switch(opt) {
+
+            case 'v':
+                verbose = true;
+                break;
+            
+            case 'f':
+                fileName = optarg;
+                break;
+            
+            case '?':
+                printChar(optopt);
+                break;
+
+        }
+
+    }
+
+    if (fileName == nullptr) {
 
         printString("No file was specified.\n");
         return;
 
     }
 
-    if (openFile(argv[1], file)) {
+    newline();
+
+    if (verbose) {
         
+        printString("Loading ");
+        printString(fileName);
+        printString(" . . .\n");
+
+    }
+
+    if (openFile(fileName, file)) {
+        
+        if (verbose) {
+        
+            printString("Loaded ");
+            printString(fileName);
+            printString("!\n");
+
+        }
+
+
         uint8_t huge* mutableMemory = fileMemory;
         uint32_t count = 0;
 
@@ -298,6 +355,9 @@ void type() {
 }
 
 void executeCommand(char* userInput) {
+
+    verbose = false;
+    optreset = true;
 
     for (int i = 0; i < MAX_ARGS; i++)
         argv[i] = 0;
